@@ -49,7 +49,8 @@ class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard {
     void clearCandStrBar(void);
     void showCandStrBar(QStringList strlist);
     void hideAll(void);
-
+private:		
+	void handelShift(bool checked);
   private:
     QinEngine* imEngine;
     QWidget* selectPanel;
@@ -67,7 +68,7 @@ class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard {
 
   private slots:
     void s_on_btn_clicked(int btn);
-    void s_on_btnCands_clicked(int btn);
+    void s_on_btnCands_clicked(QWidget* btn);
     void on_btnCaps_toggled(bool checked);
     void on_btnShiftLeft_toggled(bool checked);
     void on_btnShiftRight_toggled(bool checked);

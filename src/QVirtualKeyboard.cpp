@@ -206,23 +206,31 @@ void QVirtualKeyboard::on_btnCaps_toggled(bool checked) {
   }
 }
 
+void QVirtualKeyboard::handelShift(bool checked) {
+	Shifted = checked;
+	if (Shifted) {
+	  if (Capsed)
+		changeNormalKeyMap(imEngine->currentIM);
+	  else
+		changeShiftKeyMap(imEngine->currentIM);
+	} else {
+	  if (Capsed)
+		changeShiftKeyMap(imEngine->currentIM);
+	  else
+		changeNormalKeyMap(imEngine->currentIM);
+	}
+}
+
 void QVirtualKeyboard::on_btnShiftLeft_toggled(bool checked) {
-  Shifted = checked;
-  if (Shifted) {
-    if (Capsed)
-      changeNormalKeyMap(imEngine->currentIM);
-    else
-      changeShiftKeyMap(imEngine->currentIM);
-  } else {
-    if (Capsed)
-      changeShiftKeyMap(imEngine->currentIM);
-    else
-      changeNormalKeyMap(imEngine->currentIM);
-  }
+	handelShift(checked);
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
+  btnShiftRight->setChecked(btnShiftLeft->isChecked());
 }
 
 void QVirtualKeyboard::on_btnShiftRight_toggled(bool checked) {
-  on_btnShiftLeft_toggled(checked);
+	handelShift(checked);
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
+	btnShiftLeft->setChecked(btnShiftRight->isChecked());
 }
 
 void QVirtualKeyboard::on_btnIMToggle_clicked(void) {
@@ -359,17 +367,21 @@ bool QVirtualKeyboard::isTextKey(int keyId)
       || keyId == Qt::Key_Alt);
 }
 
-void QVirtualKeyboard::s_on_btnCands_clicked(int btn) {
-  QString strKeyId = candButtons[btn]->accessibleName();
-  bool isOk;
-  int keyId = strKeyId.toInt(&isOk, 16);
-
+void QVirtualKeyboard::s_on_btnCands_clicked(QWidget* btn) {
+  QPushButton* pBtn = qobject_cast < QPushButton*>(btn);
+	if(pBtn)
+	{
+		  QString strKeyId = pBtn->accessibleName();
+		  bool isOk;
+		  int keyId = strKeyId.toInt(&isOk, 16);
+		
 #ifdef DEBUG
-  qDebug() << "DEBUG: selected = " << btn;
+		  qDebug() << "DEBUG: selected = " << btn<<keyId<<isOk;
 #endif
-
-  QWSServer::sendKeyEvent(0, keyId, Qt::NoModifier, true, false);
-  clearCandStrBar();
+		
+		  QWSServer::sendKeyEvent(0, keyId, Qt::NoModifier, true, false);
+		  clearCandStrBar();
+	}
 }
 
 void QVirtualKeyboard::clearCandStrBar(void) {
@@ -405,6 +417,9 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
     selectPanel->layout()->addWidget(button);
     button->show();
   }
+  QPushButton* leftBtn = new QPushButton(">");
+  leftBtn->setAccessibleName(QString("%1").arg(Qt::Key_Right,0,16));
+  selectPanel->layout()->addWidget(leftBtn);
 
   /* Fix border for the rightmost color, the sequence of the CSS must be
    * border-right then border-style else it won't work */
@@ -421,10 +436,14 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   for (int i = 0; i < candButtons.size(); i++) {
     candButtons[i]->setAccessibleName(QString("%1").arg(keys[i], 2, 16));
     connect(candButtons[i], SIGNAL(clicked()), candSignalMapper, SLOT(map()));
-    candSignalMapper->setMapping(candButtons[i], i);
+    candSignalMapper->setMapping(candButtons[i], candButtons[i]);
   }
-  connect(candSignalMapper, SIGNAL(mapped(int)), this,
-      SLOT(s_on_btnCands_clicked(int)));
+  
+  connect(leftBtn, SIGNAL(clicked()), candSignalMapper, SLOT(map()));
+  candSignalMapper->setMapping(leftBtn, leftBtn);
+  
+  connect(candSignalMapper, SIGNAL(mapped(QWidget*)), this,
+      SLOT(s_on_btnCands_clicked(QWidget*)));
 }
 
 

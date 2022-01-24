@@ -124,7 +124,10 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
     updatePreEditBuffer();
 //判断是否存在侯选词，如果存在则从输入法核心中获取选词列表，并显示在侯选列表
   if (currentIM->getDoPopUp())
-    vkeyboard->showCandStrBar(currentIM->getPopUpStrings());
+  {
+	  vkeyboard->showCandStrBar(currentIM->getPopUpStrings());
+	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+  }
   else
   {
   	vkeyboard->clearCandStrBar();

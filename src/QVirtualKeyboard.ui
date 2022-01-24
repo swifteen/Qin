@@ -971,7 +971,7 @@ QToolButton:on {
           <string>    Caps   </string>
          </property>
          <property name="checkable">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="autoRepeat">
           <bool>false</bool>

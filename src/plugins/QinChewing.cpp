@@ -32,7 +32,7 @@
 
 #include <QStringList>
 #include <chewing.h>
-
+#include <QDebug>
 QinChewing::QinChewing(void): QinIMBase(":/data/Chewing.xml") {
   int keys[] = SELKEYS;
 #if 0
@@ -112,6 +112,7 @@ QStringList QinChewing::getPopUpStrings(void) {
 //      free(word);
     }
   }
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<cands;
 
   
 #if 0
@@ -227,10 +228,12 @@ void QinChewing::handle_Tab(void) {
 }
 
 void QinChewing::handle_Left(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
   chewing_handle_Left(chewContext);
 }
 
 void QinChewing::handle_Right(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
   chewing_handle_Right(chewContext);
 }
 
