@@ -134,6 +134,19 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
 
   return !doSendEvent;//返回true，则阻止事件做进一步处理
 }
+	
+bool QinEngine::filter(const QPoint& point, int state, int wheel)
+{
+	if(0 == state)//按下释放,解决手动隐藏虚拟键盘后，再次点击输入框，能够两次弹出键盘
+	{
+		if(!vkeyboard->isVisible())
+		{
+			currentIM->reset();
+			vkeyboard->show();
+		}			
+	}
+	return QWSInputMethod::filter(point,state,wheel);
+}
 
 void QinEngine::updateCommitString() {
   char* commit_str = currentIM->getCommitString();
@@ -171,6 +184,7 @@ void QinEngine::mouseHandler(int offset, int state) {
     sendPreeditString(inputBuffer, offset, 1);
     selected = offset;
   }
+//  qDebug("mouseHandler offset[%d], state[%d",offset, state);
 }
 
 /**

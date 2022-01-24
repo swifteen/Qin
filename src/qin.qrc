@@ -5,5 +5,6 @@
     <file>data/Chewing.xml</file>
     <file>data/Boshiamy.xml</file>
     <file>data/Pinyin.xml</file>
+	<file>data/hidekeyboard.png</file>
   </qresource>
 </RCC>

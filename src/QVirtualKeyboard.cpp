@@ -70,7 +70,7 @@ QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
   location = 0;
   IMIndex = 0;
   candSignalMapper = NULL;
-  opacitySlide->setRange(20, 100);
+//  opacitySlide->setRange(20, 100);
 
   /* Setup buttons */
   allButtons = findChildren<QToolButton*>();
@@ -103,6 +103,7 @@ void QVirtualKeyboard::hideAll(void) {
 }
 
 void QVirtualKeyboard::on_btnLoc_clicked(void) {
+#if 0
   location = !location;
   if (location) {
     btnLoc->setText("↯");
@@ -116,6 +117,12 @@ void QVirtualKeyboard::on_btnLoc_clicked(void) {
     selectPanel->move((QApplication::desktop()->width() - width())/2,
         QApplication::desktop()->height() - height() - MAX_SELECT_PANEL_HEIGHT);
   }
+#endif
+}
+
+void QVirtualKeyboard::on_btnHide_clicked()
+{
+    hideAll();
 }
 
 void QVirtualKeyboard::s_on_btn_clicked(int btn) {
@@ -419,3 +426,5 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   connect(candSignalMapper, SIGNAL(mapped(int)), this,
       SLOT(s_on_btnCands_clicked(int)));
 }
+
+

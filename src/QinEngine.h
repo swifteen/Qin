@@ -41,7 +41,14 @@ class QinEngine: public QWSInputMethod {
     ~QinEngine();
     void regInputMethod(QinIMBase* imb);
     void setCurrentIM(int index);
-
+private:	
+  bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
+  bool filter(const QPoint& point, int state, int wheel);
+  void updateHandler(int type);
+  void mouseHandler(int offset, int state);
+  void updateCommitString();
+  void updatePreEditBuffer(void);
+  void selectPreEditWord(int index);
   private:
     QVirtualKeyboard* vkeyboard;
     QString inputBuffer;
@@ -49,13 +56,6 @@ class QinEngine: public QWSInputMethod {
     QinIMBase* defaultIM;
     QinIMBase* currentIM;
     int selected;
-
-    bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
-    void updateHandler(int type);
-    void mouseHandler(int offset, int state);
-    void updateCommitString();
-    void updatePreEditBuffer(void);
-    void selectPreEditWord(int index);
 };
 
 #endif /* __QIN_SRC_QIN_ENGINE_H__ */

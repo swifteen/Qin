@@ -74,6 +74,7 @@ class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard {
     void on_btnIMToggle_clicked(void);
     void on_opacitySlide_valueChanged(int value);
     void on_btnLoc_clicked(void);
+    void on_btnHide_clicked();
     bool isTextKey(int keyId);
     void changeNormalKeyMap(QinIMBase* imb);
     void changeShiftKeyMap(QinIMBase* imb);
