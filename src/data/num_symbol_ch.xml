@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (C) 2010 -  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
+ * All Rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+-->
+
+<QinIM>
+  <name>English</name>
+  <tableim>false</tableim>
+  <preeditable>false</preeditable>
+  <customkeymap>true</customkeymap>
+  <keymap>
+    <normal>
+      <key value="`">`</key>
+      <key value="1">1</key>
+      <key value="2">2</key>
+      <key value="3">3</key>
+      <key value="4">4</key>
+      <key value="5">5</key>
+      <key value="6">6</key>
+      <key value="7">7</key>
+      <key value="8">8</key>
+      <key value="9">9</key>
+      <key value="0">0</key>
+      <key value="-">-</key>
+      <key value="=">=</key>
+
+      <key value="q">!</key>
+      <key value="w">@</key>
+      <key value="e">#</key>
+      <key value="r">$</key>
+      <key value="t">%</key>
+      <key value="y">^</key>
+      <key value="u">&amp;</key>
+      <key value="i">*</key>
+      <key value="o">(</key>
+      <key value="p">)</key>
+      <key value="[">[</key>
+      <key value="]">]</key>
+      <key value="\\">\</key>
+
+      <key value="a">~</key>
+      <key value="s">_</key>
+      <key value="d">+</key>
+      <key value="f">{</key>
+      <key value="g">}</key>
+      <key value="h">|</key>
+      <key value="j">&lt;</key>
+      <key value="k">&gt;</key>
+      <key value="l">…</key>
+      <key value=";">;</key>
+      <key value="&apos;">&apos;</key>
+	  
+      <key value="z">、</key>
+      <key value="x">“</key>
+      <key value="c">”</key>
+      <key value="v">：</key>
+      <key value="b">；</key>
+      <key value="n">！</key>
+      <key value="m">？</key>
+      <key value=",">,</key>
+      <key value=".">.</key>
+      <key value="/">/</key>
+    </normal>
+    <shift>
+      <key value="`">~</key>
+	  <key value="1">1</key>
+      <key value="2">2</key>
+      <key value="3">3</key>
+      <key value="4">4</key>
+      <key value="5">5</key>
+      <key value="6">6</key>
+      <key value="7">7</key>
+      <key value="8">8</key>
+      <key value="9">9</key>
+      <key value="0">0</key>
+      <key value="-">_</key>
+      <key value="=">+</key>
+
+      <key value="q">〈</key>
+      <key value="w">〉</key>
+      <key value="e">〔</key>
+      <key value="r">〕</key>
+      <key value="t">（</key>
+      <key value="y">）</key>
+      <key value="u">°</key>
+      <key value="i">¥</key>
+      <key value="o">€</key>
+      <key value="p">¢</key>
+      <key value="[">{</key>
+      <key value="]">}</key>
+      <key value="\\">|</key>
+
+      <key value="a">`</key>
+      <key value="s">-</key>
+      <key value="d">=</key>
+      <key value="f">[</key>
+      <key value="g">]</key>
+      <key value="h">\</key>
+      <key value="j">,</key>
+      <key value="k">.</key>
+      <key value="l">/</key>
+      <key value=";">:</key>
+      <key value="&apos;">&quot;</key>
+
+
+      <key value="z">《</key>
+      <key value="x">》</key>
+      <key value="c">【</key>
+      <key value="v">】</key>
+      <key value="b">『</key>
+      <key value="n">』</key>
+      <key value="m">—</key>
+      <key value=",">&lt;</key>
+      <key value=".">&gt;</key>
+      <key value="/">?</key>
+    </shift>
+  </keymap>
+</QinIM>
+

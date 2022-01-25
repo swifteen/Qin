@@ -79,6 +79,8 @@ private:
     bool isTextKey(int keyId);
     void changeNormalKeyMap(QinIMBase* imb);
     void changeShiftKeyMap(QinIMBase* imb);
+    void on_btnIM_NumLeftToggle_clicked();
+    void on_btnIM_NumRightToggle_clicked();
 };
 
 #endif /* QVIRTUALKEYBOARD_H */

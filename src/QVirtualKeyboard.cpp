@@ -145,31 +145,42 @@ void QVirtualKeyboard::s_on_btn_clicked(int btn) {
     involvedKeys++;
 
     switch (keyId) {
-      case 0x2c:
-      case 0x2e:
-      case 0x2f: keyId += 0x10; break;
-      case 0x3b: keyId = 0x3a; break;
-      case 0x27: keyId = 0x22; break;
-      case 0x5b:
-      case 0x5c:
-      case 0x5d: keyId += 0x20; break;
-      case 0x31: keyId = 0x21; break;
-      case 0x32: keyId = 0x40; break;
-      case 0x33: keyId = 0x23; break;
-      case 0x34: keyId = 0x24; break;
+      case Qt::Key_Comma://0x2c
+      case Qt::Key_Period://0x2e
+      case Qt::Key_Slash: //0x2f
+	  		keyId += 0x10; //Qt::Key_Less Qt::Key_Greater Qt::Key_Question
+	  break;
+      case Qt::Key_Semicolon: //0x3b
+	  	keyId = Qt::Key_Colon; //0x3a
+		break;
+      case Qt::Key_Apostrophe: //0x27
+	  	keyId = Qt::Key_QuoteDbl;//0x22 
+		break;
+      case Qt::Key_BracketLeft://0x5b
+      case Qt::Key_Backslash://0x5c
+      case Qt::Key_BracketRight://0x5d
+	  	keyId += 0x20; //Qt::Key_BraceLeft Qt::Key_Bar Qt::Key_BraceRight
+	  break;
+      case 0x31: keyId = 0x21; break;//Qt::Key_1  ==> Qt::Key_Exclam
+      case 0x32: keyId = 0x40; break;//Qt::Key_2  ==> Qt::Key_At
+      case 0x33: keyId = 0x23; break;//Qt::Key_3  ==> Qt::Key_NumberSign
+      case 0x34: keyId = 0x24; break;//Qt::Key_4  ==> Qt::Key_Dollar
       case 0x35: keyId = 0x25; break;
       case 0x36: keyId = 0x5e; break;
       case 0x37: keyId = 0x26; break;
       case 0x38: keyId = 0x2a; break;
-      case 0x39: keyId = 0x28; break;
-      case 0x30: keyId = 0x29; break;
-      case 0x2d: keyId = 0x5f; break;
-      case 0x3d: keyId = 0x2b; break;
+      case 0x39: keyId = 0x28; break;//Qt::Key_9  ==> Qt::Key_ParenLeft
+      case 0x30: keyId = 0x29; break;//Qt::Key_0  ==> Qt::Key_ParenRight
+      case 0x2d: keyId = 0x5f; break;//Qt::Key_Minus  ==> Qt::Key_Underscore
+      case 0x3d: keyId = 0x2b; break;//Qt::Key_Equal  ==> Qt::Key_Plus
       default: keyId = tolower(keyId);
     }
   }
 
   QString ch = allButtons.at(btn)->text().trimmed();
+#ifdef DEBUG
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btn<<ch;
+#endif
   int uni = ch.unicode()[0].unicode();
 
   if (!istextkey) {
@@ -182,9 +193,11 @@ void QVirtualKeyboard::s_on_btn_clicked(int btn) {
 
   if (keyId == Qt::Key_Space)
     ch = QString(" ");
-
+#ifdef DEBUG
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<uni<<keyId<<Modifier;
+#endif
   QWSServer::sendKeyEvent(uni, keyId, Modifier, true, false);
-
+//在shift状态下输入字符后，又回到原始状态
   if (istextkey) {
     btnShiftLeft->setChecked(false);
     btnShiftRight->setChecked(false);
@@ -223,21 +236,46 @@ void QVirtualKeyboard::handelShift(bool checked) {
 
 void QVirtualKeyboard::on_btnShiftLeft_toggled(bool checked) {
 	handelShift(checked);
-  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
+//  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
   btnShiftRight->setChecked(btnShiftLeft->isChecked());
 }
 
 void QVirtualKeyboard::on_btnShiftRight_toggled(bool checked) {
 	handelShift(checked);
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
+//	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
 	btnShiftLeft->setChecked(btnShiftRight->isChecked());
 }
 
+/**
+ * @brief 左边数字和符号输入切换按钮
+ */
+void QVirtualKeyboard::on_btnIM_NumLeftToggle_clicked()
+{
+	imEngine->setCurrentNumAndSymbolIM(0);//目前只考虑中文下的符号输入，在其它语种下，符号输入界面存在不同
+	Capsed = false;
+	Shifted = false;
+	btnCaps->setChecked(false);
+	btnShiftLeft->setChecked(false);
+	btnShiftRight->setChecked(false);
+	changeNormalKeyMap(imEngine->currentIM);
+}
+
+/**
+ * @brief 右边数字和符号输入切换按钮
+ */
+void QVirtualKeyboard::on_btnIM_NumRightToggle_clicked()
+{
+	on_btnIM_NumLeftToggle_clicked();
+}
+
 void QVirtualKeyboard::on_btnIMToggle_clicked(void) {
-  IMIndex = (IMIndex + 1) % regedIMs.size();
+	if(!imEngine->getCurrentNumAndSymbolState())
+	{
+		IMIndex = (IMIndex + 1) % regedIMs.size();
+	}
   imEngine->setCurrentIM(IMIndex);
   btnIMToggle->setText(imEngine->currentIM->name());
-
+	//根据XML的customkeymap标识来判断是否启用默认的英文布局还是XML中指定的自定义布局
   if (imEngine->currentIM->getUseCustomKeyMap()) {
     if (Capsed || Shifted)
       changeShiftKeyMap(imEngine->currentIM);
@@ -449,5 +487,4 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   connect(candSignalMapper, SIGNAL(mapped(QWidget*)), this,
       SLOT(s_on_btnCands_clicked(QWidget*)));
 }
-
 

@@ -40,7 +40,10 @@ class QinEngine: public QWSInputMethod {
     QinEngine();
     ~QinEngine();
     void regInputMethod(QinIMBase* imb);
+	void regNumAndSymbolInputMethod(QinIMBase* imb);
     void setCurrentIM(int index);
+	void setCurrentNumAndSymbolIM(int index);
+	bool getCurrentNumAndSymbolState();
 private:	
   bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
   bool filter(const QPoint& point, int state, int wheel);
@@ -52,10 +55,12 @@ private:
   private:
     QVirtualKeyboard* vkeyboard;
     QString inputBuffer;
+    QVector<QinIMBase*> numAndSymbolInputMethods;//符号和数字输入在不同的语言下存在差异
     QVector<QinIMBase*> inputMethods;
     QinIMBase* defaultIM;
     QinIMBase* currentIM;
     int selected;
+	bool m_bNumAndSymbol;//当前状态是否为符号和数字输入
 };
 
 #endif /* __QIN_SRC_QIN_ENGINE_H__ */

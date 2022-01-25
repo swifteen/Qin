@@ -36,6 +36,9 @@ QinEngine::QinEngine() {
 //  regInputMethod(new QinPinyin());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   defaultIM = inputMethods[0];
+	//注册数字和符号输入核心
+  regNumAndSymbolInputMethod(new QinIMBase(":/data/num_symbol_ch.xml"));
+	m_bNumAndSymbol = false;
 }
 
 QinEngine::~QinEngine() {
@@ -43,6 +46,10 @@ QinEngine::~QinEngine() {
   for (QVector<QinIMBase*>::iterator it = inputMethods.begin();
       it != inputMethods.end(); ++it)
     delete *it;
+	  
+	for (QVector<QinIMBase*>::iterator it = numAndSymbolInputMethods.begin();
+		it != numAndSymbolInputMethods.end(); ++it)
+	  delete *it;
 }
 
 void QinEngine::regInputMethod(QinIMBase* imb) {
@@ -55,9 +62,30 @@ void QinEngine::regInputMethod(QinIMBase* imb) {
   vkeyboard->insertInputMethod(imb);
 }
 
+void QinEngine::regNumAndSymbolInputMethod(QinIMBase* imb) {
+  if (!imb) {
+    qDebug("Error: no input method specified\n");
+    return;
+  }
+
+  numAndSymbolInputMethods.push_back(imb);
+//  vkeyboard->insertInputMethod(imb);
+}
+
 void QinEngine::setCurrentIM(int index) {
   currentIM = inputMethods[index];
   currentIM->reset();
+  m_bNumAndSymbol = false;
+}
+
+void QinEngine::setCurrentNumAndSymbolIM(int index) {
+  currentIM = numAndSymbolInputMethods[index];
+  currentIM->reset();
+  m_bNumAndSymbol = true;
+}
+
+bool QinEngine::getCurrentNumAndSymbolState() {
+  return m_bNumAndSymbol;
 }
 
 bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,

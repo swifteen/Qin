@@ -134,6 +134,7 @@ void QinIMBase::setupKeyMap(const QDomElement& keymap) {
     attr = nodeElement.attribute("value");
     fromShiftStdKB_hash[attr] = nodeElement.text();
     node = node.nextSibling();
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<nodeElement.text()<<attr<<fromShiftStdKB_hash[attr];
   }
 }
 
@@ -200,7 +201,7 @@ void QinIMBase::handle_PageDown(void) {}
 void QinIMBase::handle_PageUp(void) {}
 void QinIMBase::handle_Right(void) {}
 void QinIMBase::handle_Space(void) {
-	m_commitStr = " ";
+//	m_commitStr = " ";
 }
 void QinIMBase::handle_Tab(void) {}
 void QinIMBase::handle_Up(void) {}
