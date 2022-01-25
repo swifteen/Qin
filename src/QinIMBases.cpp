@@ -77,6 +77,7 @@ QinIMBase::QinIMBase(QString xmlpath): xmlPath(xmlpath) {
   qDebug() << "DEBUG: useCustomKeyMap: " << useCustomKeyMap;
 #endif
   setupKeyMap(root.firstChildElement("keymap"));
+	m_commitStr.clear();
 }
 
 QinIMBase::~QinIMBase() {}
@@ -153,7 +154,17 @@ char* QinIMBase::getPreEditString(void) {
 }
 
 char* QinIMBase::getCommitString(void) {
-  return NULL;
+	char* commitStr = NULL;
+	const char* cstr = NULL;
+	
+	if (!m_commitStr.isEmpty()) {
+	  cstr = m_commitStr.toStdString().c_str();
+	  commitStr = new char[strlen(cstr) + 1];
+	  memcpy(commitStr, cstr, strlen(cstr));
+	  commitStr[strlen(cstr)] = 0;
+	  m_commitStr.clear();
+	}
+	return commitStr;
 }
 
 int QinIMBase::cursorCurrent(void) {
@@ -188,7 +199,9 @@ void QinIMBase::handle_Left(void) {}
 void QinIMBase::handle_PageDown(void) {}
 void QinIMBase::handle_PageUp(void) {}
 void QinIMBase::handle_Right(void) {}
-void QinIMBase::handle_Space(void) {}
+void QinIMBase::handle_Space(void) {
+	m_commitStr = " ";
+}
 void QinIMBase::handle_Tab(void) {}
 void QinIMBase::handle_Up(void) {}
 

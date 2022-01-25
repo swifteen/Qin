@@ -64,7 +64,7 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
     bool autoRepeat) {
   bool doSendEvent = true;
 #ifdef DEBUG
-	qDebug("DEBUG1: KeyPressed: %d, %x", uni, keyId);
+	qDebug("DEBUG1: KeyPressed: %d, %x,isPress[%d],autoRepeat[%d]", uni, keyId,isPress,autoRepeat);
 #endif
 
   if (!isPress)
@@ -74,7 +74,7 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
   qDebug("DEBUG: KeyPressed: %d, %x", uni, keyId);
 #endif
 
-  if (!currentIM->getPreEditable())
+  if (!currentIM->getPreEditable() && (Qt::Key_Space != keyId))//用于解决英文输入下，按空格无效
     return false;
 
   switch (keyId) {
@@ -140,7 +140,7 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
 	
 bool QinEngine::filter(const QPoint& point, int state, int wheel)
 {
-	if(0 == state)//按下释放,解决手动隐藏虚拟键盘后，再次点击输入框，能够两次弹出键盘
+	if(0 == state)//按下释放,解决手动隐藏虚拟键盘后，再次点击输入框，能够再次弹出键盘
 	{
 		if(!vkeyboard->isVisible())
 		{

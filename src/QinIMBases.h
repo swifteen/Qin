@@ -43,7 +43,8 @@ class QinIMBase {
     QString imName;
     bool useCustomKeyMap;
     bool preEditable;
-
+	private:
+		QString m_commitStr;//用于解决英文输入下，按空格无效
   public:
     /** Public members **/
     QHash<QString, QString> fromStdKB_hash;

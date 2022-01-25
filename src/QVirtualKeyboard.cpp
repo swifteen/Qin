@@ -417,9 +417,11 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
     selectPanel->layout()->addWidget(button);
     button->show();
   }
+#if 0
   QPushButton* leftBtn = new QPushButton(">");
   leftBtn->setAccessibleName(QString("%1").arg(Qt::Key_Right,0,16));
   selectPanel->layout()->addWidget(leftBtn);
+#endif
 
   /* Fix border for the rightmost color, the sequence of the CSS must be
    * border-right then border-style else it won't work */
@@ -439,8 +441,10 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
     candSignalMapper->setMapping(candButtons[i], candButtons[i]);
   }
   
+#if 0
   connect(leftBtn, SIGNAL(clicked()), candSignalMapper, SLOT(map()));
   candSignalMapper->setMapping(leftBtn, leftBtn);
+#endif
   
   connect(candSignalMapper, SIGNAL(mapped(QWidget*)), this,
       SLOT(s_on_btnCands_clicked(QWidget*)));
