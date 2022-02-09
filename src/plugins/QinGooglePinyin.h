@@ -45,6 +45,12 @@ private:
 class QinGooglePinyin: public QinIMBase 
 {
 	public:
+		enum State
+		{
+			Idle,
+			Input,
+			Predict
+		};
 	  QinGooglePinyin(void);
 	  virtual ~QinGooglePinyin(void);
 	
@@ -57,7 +63,7 @@ class QinGooglePinyin: public QinIMBase
 	  virtual char* getPreEditString(void);
 	  virtual char* getCommitString(void);
 	  virtual void reset(void);
-	
+	  virtual void update(void);
 	  /** Key handling APIs **/
 	  virtual void handle_Default(int keyId);
 	  virtual void handle_Space(void);
@@ -79,7 +85,6 @@ class QinGooglePinyin: public QinIMBase
 	  void choosePredictChoice(int choiceId);
 	  QString getComposingStrActivePart();
 	  void resetCandidates();
-	  void updateCandidateList();
 	  bool canDoPrediction();
 	  void tryPredict();
   private:
@@ -88,13 +93,7 @@ class QinGooglePinyin: public QinIMBase
     string commitStr;
 
   private:
-	  enum State
-	  {
-		  Idle,
-		  Input,
-		  Predict
-	  };
-	  QPointer<PinyinDecoderService> pinyinDecoderService;
+	  QScopedPointer<PinyinDecoderService> pinyinDecoderService;
 	  State state;
 	  QString surface;
 	  int totalChoicesNum;

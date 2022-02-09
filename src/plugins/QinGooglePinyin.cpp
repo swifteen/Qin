@@ -216,7 +216,7 @@ class ScopedCandidateListUpdate
 {
     Q_DISABLE_COPY(ScopedCandidateListUpdate)
 public:
-    inline explicit ScopedCandidateListUpdate(PinyinInputMethodPrivate *d) :
+    inline explicit ScopedCandidateListUpdate(QinGooglePinyin *d) :
         d(d),
         candidatesList(d->candidatesList),
         totalChoicesNum(d->totalChoicesNum),
@@ -227,14 +227,25 @@ public:
     inline ~ScopedCandidateListUpdate()
     {
         if (totalChoicesNum != d->totalChoicesNum || state != d->state || candidatesList != d->candidatesList)
-            d->updateCandidateList();
+        {
+			/*
+				The input method emits this signal when the contents of the selection list has changed. 
+				The type parameter specifies which selection list has changed
+				The input method emits this signal when the current index has changed in the selection list identified by type.
+			*/
+#if 0//TODO
+			emit q->selectionListChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList);
+			emit q->selectionListActiveItemChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList,
+												   totalChoicesNum > 0 && state == Input ? 0 : -1);
+#endif
+		}
     }
 
 private:
-    PinyinInputMethodPrivate *d;
+    QinGooglePinyin *d;
     QList<QString> candidatesList;
     int totalChoicesNum;
-    PinyinInputMethodPrivate::State state;
+    QinGooglePinyin::State state;
 };
 
 QinGooglePinyin::QinGooglePinyin(void): 
@@ -259,16 +270,14 @@ QinGooglePinyin::~QinGooglePinyin(void) {
 
 void QinGooglePinyin::resetToIdleState()
 {
-	Q_Q(PinyinInputMethod);
-
-	QVirtualKeyboardInputContext *inputContext = q->inputContext();
-
+#if 0
 	// Disable the user dictionary when entering sensitive data
 	if (inputContext) {
 		bool userDictionaryEnabled = !inputContext->inputMethodHints().testFlag(Qt::ImhSensitiveData);
 		if (userDictionaryEnabled != pinyinDecoderService->isUserDictionaryEnabled())
 			pinyinDecoderService->setUserDictionary(userDictionaryEnabled);
 	}
+#endif
 
 	if (state == Idle)
 		return;
@@ -278,8 +287,7 @@ void QinGooglePinyin::resetToIdleState()
 	fixedLen = 0;
 	finishSelection = true;
 	composingStr.clear();
-	if (inputContext)
-		inputContext->setPreeditText(QString());
+	preeditStr.clear();
 	activeCmpsLen = 0;
 	posDelSpl = -1;
 	isPosInSpl = false;
@@ -315,8 +323,6 @@ bool QinGooglePinyin::removeSpellingChar()
 
 void QinGooglePinyin::chooseAndUpdate(int candId)
 {
-	Q_Q(PinyinInputMethod);
-
 	if (state == Predict)
 		choosePredictChoice(candId);
 	else
@@ -326,7 +332,8 @@ void QinGooglePinyin::chooseAndUpdate(int candId)
 		if ((candId >= 0 || finishSelection) && composingStr.length() == fixedLen) {
 			QString resultStr = getComposingStrActivePart();
 			tryPredict();
-			q->inputContext()->commit(resultStr);
+//			q->inputContext()->commit(resultStr);
+			commitStr = resultStr;
 		} else if (state == Idle) {
 			state = Input;
 		}
@@ -370,7 +377,6 @@ QString QinGooglePinyin::candidateAt(int index)
 
 void QinGooglePinyin::chooseDecodingCandidate(int candId)
 {
-	Q_Q(PinyinInputMethod);
 	Q_ASSERT(state != Predict);
 
 	int result = 0;
@@ -394,7 +400,10 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 			}
 			resetToIdleState();
 			if (!resultStr.isEmpty())
-				q->inputContext()->commit(resultStr);
+			{
+//				q->inputContext()->commit(resultStr);
+				commitStr = resultStr;
+			}
 			return;
 		}
 	}
@@ -427,7 +436,8 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 		if (surfaceDecodedLen < surface.length())
 			composingStrDisplay += surface.mid(surfaceDecodedLen).toLower();
 	}
-	q->inputContext()->setPreeditText(composingStrDisplay);
+//	q->inputContext()->setPreeditText(composingStrDisplay);
+	preeditStr = composingStrDisplay;
 
 	finishSelection = splStart.size() == (fixedLen + 2);
 	if (!finishSelection)
@@ -469,36 +479,29 @@ void QinGooglePinyin::resetCandidates()
 	}
 }
 
-void QinGooglePinyin::updateCandidateList()
-{
-	Q_Q(PinyinInputMethod);
-	emit q->selectionListChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList);
-	emit q->selectionListActiveItemChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList,
-										   totalChoicesNum > 0 && state == PinyinInputMethodPrivate::Input ? 0 : -1);
-}
-
 bool QinGooglePinyin::canDoPrediction()
 {
-	Q_Q(PinyinInputMethod);
-	QVirtualKeyboardInputContext *inputContext = q->inputContext();
-	return inputMode == QVirtualKeyboardInputEngine::InputMode::Pinyin &&
-			composingStr.length() == fixedLen &&
+#if 0
+	return composingStr.length() == fixedLen &&
 			inputContext &&
 			!inputContext->inputMethodHints().testFlag(Qt::ImhNoPredictiveText);
+#endif
+	return (composingStr.length() == fixedLen);
 }
 
 void QinGooglePinyin::tryPredict()
 {
 	// Try to get the prediction list.
 	if (canDoPrediction()) {
-		Q_Q(PinyinInputMethod);
 		if (state != Predict)
 			resetToIdleState();
+#if 0//TODO
 		QVirtualKeyboardInputContext *inputContext = q->inputContext();
 		int cursorPosition = inputContext->cursorPosition();
 		int historyStart = qMax(0, cursorPosition - 3);
 		QString history = inputContext->surroundingText().mid(historyStart, cursorPosition - historyStart);
 		candidatesList = pinyinDecoderService->predictionList(history);
+#endif
 		totalChoicesNum = candidatesList.size();
 		finishSelection = false;
 		state = Predict;
@@ -516,8 +519,9 @@ bool QinGooglePinyin::isPreEditing(void) {
   return preeditStr.length() > 0;
 }
 
+//判断是否存在侯选词，如果存在则从输入法核心中获取选词列表，并显示在侯选列表
 bool QinGooglePinyin::getDoPopUp(void) {
-  return true;
+  return (candidatesCount() > 0);
 }
 
 QStringList QinGooglePinyin::getPopUpStrings(void) {
@@ -535,23 +539,50 @@ char* QinGooglePinyin::getCommitString(void) {
 }
 
 void QinGooglePinyin::reset(void) {
+    ScopedCandidateListUpdate scopedCandidateListUpdate(this);
+    Q_UNUSED(scopedCandidateListUpdate);
+    resetToIdleState();
+}
+
+void QinGooglePinyin::update(void)
+{
+    ScopedCandidateListUpdate scopedCandidateListUpdate(this);
+    Q_UNUSED(scopedCandidateListUpdate);
+    chooseAndFinish();
+    tryPredict();
 }
 
 void QinGooglePinyin::handle_Default(int keyId) {
-
+	if ((keyId >= Qt::Key_A && keyId <= Qt::Key_Z) || (keyId == Qt::Key_Apostrophe)) {
+		if (state == Predict)
+			resetToIdleState();
+		if (addSpellingChar(tolower(keyId), state == Idle)) //TODO
+		{
+			chooseAndUpdate(-1);
+		}
+	}
+	else//其它输入则完成输入
+	{
+		chooseAndFinish();
+	}
 }
 
 void QinGooglePinyin::handle_Space(void) {
-
+	if (state != Predict && candidatesCount() > 0) {
+		chooseAndUpdate(0);
+		return true;
+	}
 }
 
 void QinGooglePinyin::handle_Esc(void) {
 }
 
 void QinGooglePinyin::handle_Enter(void) {
-  commitStr = preeditStr;
-  preeditStr.clear();
-
+  if (state != Predict && candidatesCount() > 0) {
+	  commitStr = surface;
+	  resetToIdleState();
+//	  inputContext()->commit(surface);
+  }
 }
 
 void QinGooglePinyin::handle_Del(void) {
@@ -559,7 +590,9 @@ void QinGooglePinyin::handle_Del(void) {
 }
 
 void QinGooglePinyin::handle_Backspace(void) {
-
+	if (removeSpellingChar()) {
+		chooseAndUpdate(-1);
+	}
 }
 
 void QinGooglePinyin::handle_Left(void) {

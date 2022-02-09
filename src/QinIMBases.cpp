@@ -185,6 +185,7 @@ QString QinIMBase::fromShiftStdKB(QString str) {
 }
 
 void QinIMBase::reset(void) {}
+void QinIMBase::update(void) {}
 void QinIMBase::handle_Alt(void) {}
 void QinIMBase::handle_Backspace(void) {}
 void QinIMBase::handle_Capslock(void) {}

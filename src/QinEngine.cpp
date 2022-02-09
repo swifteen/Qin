@@ -206,6 +206,9 @@ void QinEngine::updateHandler(int type) {
       currentIM->reset();
       vkeyboard->hideAll();
       break;
+	  case QWSInputMethod::Update:
+		  currentIM->update();
+	  	break;
   }
 }
 

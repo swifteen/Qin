@@ -74,6 +74,7 @@ class QinIMBase {
     QString fromStdKB(QString str);
     QString fromShiftStdKB(QString str);
     virtual void reset(void);
+    virtual void update(void);
 
     /** Key handling APIs **/
     virtual void handle_Alt(void);
