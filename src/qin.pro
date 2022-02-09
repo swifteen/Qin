@@ -6,8 +6,8 @@ TEMPLATE = app
 QT += sql xml
 TARGET = 
 DEPENDPATH += . plugins
-INCLUDEPATH += . plugins chewing/include
-LIBS += -lchewing -L$$PWD/chewing/lib
+INCLUDEPATH += . plugins 3rdparty/chewing/include
+LIBS += -lchewing -L$$PWD/3rdparty/chewing/lib
 
 DEFINES += DEBUG
 # Input

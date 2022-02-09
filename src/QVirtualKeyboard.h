@@ -33,11 +33,9 @@
 #include <QWidget>
 #include <QWSInputMethod>
 #include <QToolButton>
+#include <QSignalMapper>
 
-QT_BEGIN_NAMESPACE
 class QinEngine;
-class QSignalMapper;
-QT_END_NAMESPACE
 
 class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard {
   Q_OBJECT

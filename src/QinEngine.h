@@ -27,9 +27,7 @@
 #include "QVirtualKeyboard.h"
 #include "QinIMBases.h"
 
-QT_BEGIN_NAMESPACE
 class QVirtualKeyboard;
-QT_END_NAMESPACE
 
 class QinEngine: public QWSInputMethod {
   Q_OBJECT
