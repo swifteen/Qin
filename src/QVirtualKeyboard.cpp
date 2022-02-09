@@ -302,6 +302,7 @@ void QVirtualKeyboard::changeNormalKeyMap(QinIMBase* imb) {
   btn9->setText(imb->fromStdKB("9"));
   btn0->setText(imb->fromStdKB("0"));
   btnHiphen->setText(imb->fromStdKB("-"));
+    btnAssign->setText(imb->fromStdKB("="));
 
   btnQ->setText(imb->fromStdKB("q"));
   btnW->setText(imb->fromStdKB("w"));
@@ -354,6 +355,7 @@ void QVirtualKeyboard::changeShiftKeyMap(QinIMBase* imb) {
   btn9->setText(imb->fromShiftStdKB("9"));
   btn0->setText(imb->fromShiftStdKB("0"));
   btnHiphen->setText(imb->fromShiftStdKB("-"));
+    btnAssign->setText(imb->fromShiftStdKB("="));
 
   btnQ->setText(imb->fromShiftStdKB("q"));
   btnW->setText(imb->fromShiftStdKB("w"));

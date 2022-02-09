@@ -180,8 +180,27 @@ QString QinIMBase::fromStdKB(QString str) {
 }
 
 QString QinIMBase::fromShiftStdKB(QString str) {
-  return (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end())?
-    fromShiftStdKB_hash[str]: str;
+#if 0
+    return (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) ?
+           fromShiftStdKB_hash[str] : str;
+#else
+#if 1
+
+    if (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) {
+        qDebug() << "XXX " << str << " XXX-1";
+
+        if (fromShiftStdKB_hash[str] == "&") {
+            return "&&";
+        }
+
+        return fromShiftStdKB_hash[str];
+    }
+    else {
+        qDebug() << "XXX " << str << " XXX0";
+        return str;
+    }
+
+#endif
 }
 
 void QinIMBase::reset(void) {}
@@ -201,9 +220,7 @@ void QinIMBase::handle_Left(void) {}
 void QinIMBase::handle_PageDown(void) {}
 void QinIMBase::handle_PageUp(void) {}
 void QinIMBase::handle_Right(void) {}
-void QinIMBase::handle_Space(void) {
-//	m_commitStr = " ";
-}
+void QinIMBase::handle_Space(void) {}
 void QinIMBase::handle_Tab(void) {}
 void QinIMBase::handle_Up(void) {}
 

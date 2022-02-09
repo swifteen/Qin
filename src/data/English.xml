@@ -53,7 +53,7 @@
       <key value="p">p</key>
       <key value="[">[</key>
       <key value="]">]</key>
-      <key value="\\">\</key>
+      <key value="\">\</key>
 
       <key value="a">a</key>
       <key value="s">s</key>
@@ -105,7 +105,7 @@
       <key value="p">P</key>
       <key value="[">{</key>
       <key value="]">}</key>
-      <key value="\\">|</key>
+      <key value="\">|</key>
 
       <key value="a">A</key>
       <key value="s">S</key>
