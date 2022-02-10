@@ -52,6 +52,7 @@ private:
   private:
     QinEngine* imEngine;
     QWidget* selectPanel;
+	QHBoxLayout* layout;
     bool Capsed;
     bool Shifted;
     bool location;

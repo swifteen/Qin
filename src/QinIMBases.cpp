@@ -184,8 +184,6 @@ QString QinIMBase::fromShiftStdKB(QString str) {
     return (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) ?
            fromShiftStdKB_hash[str] : str;
 #else
-#if 1
-
     if (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) {
         qDebug() << "XXX " << str << " XXX-1";
 

@@ -41,9 +41,35 @@ QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
       QApplication::desktop()->height() - height());
 
   /* Setup selectPanel */
-  QHBoxLayout* layout = new QHBoxLayout;
-  layout->setContentsMargins(1, 1, 1, 0);
-  layout->setSpacing(0);
+    QHBoxLayout* layoutAll = new QHBoxLayout;
+	layoutAll->setContentsMargins(2, 0, 1, 0);
+	layoutAll->setSpacing(0);
+
+	layout = new QHBoxLayout;
+	layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+	
+	QHBoxLayout* layout2 = new QHBoxLayout;
+	layout2->setContentsMargins(0, 0, 0, 0);
+	layout2->setSpacing(0);
+
+	QToolButton* leftBtn = new QToolButton;
+	QToolButton* rightBtn = new QToolButton;
+	leftBtn->setText("<");
+	rightBtn->setText(">");
+
+	leftBtn->setMinimumSize(80, MAX_SELECT_PANEL_HEIGHT);
+	rightBtn->setMinimumSize(80, MAX_SELECT_PANEL_HEIGHT);
+	
+	leftBtn->setAccessibleName(QString("%1").arg(Qt::Key_Left, 0, 16));//"0x01000012"
+	rightBtn->setAccessibleName(QString("%1").arg(Qt::Key_Right, 0, 16));//"0x01000014"
+	
+	layout2->addWidget(leftBtn);
+	layout2->addWidget(rightBtn);
+
+	layoutAll->addLayout(layout);
+	layoutAll->addLayout(layout2);
+	layoutAll->setStretchFactor(layout, 1);
   selectPanel = new QWidget(this, Qt::Tool |
                                   Qt::FramelessWindowHint |
                                   Qt::WindowStaysOnTopHint);
@@ -51,7 +77,7 @@ QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
       QApplication::desktop()->height() - height() - MAX_SELECT_PANEL_HEIGHT);
   selectPanel->setMinimumSize(width(), MAX_SELECT_PANEL_HEIGHT);
   selectPanel->setMaximumSize(width(), MAX_SELECT_PANEL_HEIGHT);
-  selectPanel->setLayout(layout);
+    selectPanel->setLayout(layoutAll);
   selectPanel->hide();
 
   QFile data(":/data/selectPanel.qss");
@@ -404,7 +430,9 @@ bool QVirtualKeyboard::isTextKey(int keyId)
       || keyId == Qt::Key_Enter
       || keyId == Qt::Key_CapsLock
       || keyId == Qt::Key_Backspace
-      || keyId == Qt::Key_Alt);
+             || keyId == Qt::Key_Alt
+             || keyId == Qt::Key_Left
+             || keyId == Qt::Key_Right);
 }
 
 void QVirtualKeyboard::s_on_btnCands_clicked(QWidget* btn) {
@@ -426,7 +454,7 @@ void QVirtualKeyboard::s_on_btnCands_clicked(QWidget* btn) {
 
 void QVirtualKeyboard::clearCandStrBar(void) {
   for (int i = 0; i < candButtons.size(); ++i) {
-    selectPanel->layout()->removeWidget(candButtons[i]);
+        layout->removeWidget(candButtons[i]);
     delete candButtons[i];
   }
   candButtons.clear();
@@ -454,19 +482,15 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   	button->setMinimumHeight(50);
 //    button->setFont(QFont("WenQuanYiMicroHeiLight", 18));
     candButtons.push_back(button);
-    selectPanel->layout()->addWidget(button);
+        layout->addWidget(button);
     button->show();
   }
+    /* Fix border for the rightmost color, the sequence of the CSS must be
+     * border-right then border-style else it won't work */
 #if 0
-  QPushButton* leftBtn = new QPushButton(">");
-  leftBtn->setAccessibleName(QString("%1").arg(Qt::Key_Right,0,16));
-  selectPanel->layout()->addWidget(leftBtn);
+    candButtons.last()->setStyleSheet("QPushButton { border-right: 1px "
+                                      "#8A8A8A; border-style: groove; height:48;}");
 #endif
-
-  /* Fix border for the rightmost color, the sequence of the CSS must be
-   * border-right then border-style else it won't work */
-  candButtons.last()->setStyleSheet("QPushButton { border-right: 1px "
-      "#8A8A8A; border-style: groove; height:48;}");
 
   if (candSignalMapper) {
     delete candSignalMapper;
@@ -480,11 +504,6 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
     connect(candButtons[i], SIGNAL(clicked()), candSignalMapper, SLOT(map()));
     candSignalMapper->setMapping(candButtons[i], candButtons[i]);
   }
-  
-#if 0
-  connect(leftBtn, SIGNAL(clicked()), candSignalMapper, SLOT(map()));
-  candSignalMapper->setMapping(leftBtn, leftBtn);
-#endif
   
   connect(candSignalMapper, SIGNAL(mapped(QWidget*)), this,
       SLOT(s_on_btnCands_clicked(QWidget*)));
