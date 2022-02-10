@@ -250,10 +250,12 @@ void QinChewing::handle_End(void) {
 }
 
 void QinChewing::handle_PageUp(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
   chewing_handle_PageUp(chewContext);
 }
 
 void QinChewing::handle_PageDown(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
   chewing_handle_PageDown(chewContext);
 }
 

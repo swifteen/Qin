@@ -148,7 +148,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -177,7 +177,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -206,7 +206,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -235,7 +235,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -264,7 +264,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -293,7 +293,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -322,7 +322,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -351,7 +351,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -380,7 +380,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -409,7 +409,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -438,7 +438,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -467,7 +467,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -496,7 +496,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -525,7 +525,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -590,7 +590,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -619,7 +619,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -648,7 +648,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -677,7 +677,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -706,7 +706,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -735,7 +735,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -764,7 +764,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -793,7 +793,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -822,7 +822,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -851,7 +851,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -880,7 +880,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -909,7 +909,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -938,7 +938,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -971,7 +971,7 @@ QToolButton:on {
           <string>    Caps   </string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="autoRepeat">
           <bool>false</bool>
@@ -1003,7 +1003,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1032,7 +1032,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1061,7 +1061,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1090,7 +1090,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1119,7 +1119,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1148,7 +1148,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1178,7 +1178,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1207,7 +1207,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1236,7 +1236,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1265,7 +1265,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1294,7 +1294,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1388,7 +1388,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1417,7 +1417,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1446,7 +1446,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1475,7 +1475,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1504,7 +1504,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1533,7 +1533,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1562,7 +1562,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1591,7 +1591,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1620,7 +1620,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1649,7 +1649,7 @@ QToolButton:on {
           <bool>false</bool>
          </property>
          <property name="autoRepeat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
