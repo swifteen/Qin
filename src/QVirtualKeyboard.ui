@@ -1348,7 +1348,7 @@ QToolButton:on {
           <string>     Shift     </string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="autoRepeat">
           <bool>false</bool>
@@ -1667,7 +1667,7 @@ QToolButton:on {
           <string>     Shift      </string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="autoRepeat">
           <bool>false</bool>

@@ -93,6 +93,22 @@ QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
   imEngine = im;
   Capsed = false;
   Shifted = false;
+  
+  //shift 的三种状态 0, 1, 2
+  ShiftedIndex = 0;//初始状态
+
+  btnShiftLeft->setMinimumSize(120, MAX_SELECT_PANEL_HEIGHT);
+  btnShiftRight->setMinimumSize(120, MAX_SELECT_PANEL_HEIGHT);
+  
+  btnShiftLeft->setStyleSheet("QToolButton{border:Opx}");
+  btnShiftRight->setStyleSheet("QToolButton{border:Opx}");
+  
+  btnShiftLeft->setIconSize(QSize(btnShiftLeft->width(), btnShiftLeft->height()));
+  btnShiftRight->setIconSize(QSize(btnShiftRight->width(), btnShiftRight->height()));
+  
+  btnShiftLeft->setIcon(QIcon(QPixmap(":/data/shift_0.png")));
+  btnShiftRight->setIcon(QIcon(QPixmap(":/data/shift_0.png")));
+  
   location = 0;
   IMIndex = 0;
   candSignalMapper = NULL;
@@ -224,9 +240,10 @@ void QVirtualKeyboard::s_on_btn_clicked(int btn) {
 #endif
   QWSServer::sendKeyEvent(uni, keyId, Modifier, true, false);
 //在shift状态下输入字符后，又回到原始状态
-  if (istextkey) {
-    btnShiftLeft->setChecked(false);
-    btnShiftRight->setChecked(false);
+  if (istextkey && ShiftedIndex == 1) {
+  	ShiftedIndex = -1;
+    on_btnShiftLeft_clicked();
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
   }
 }
 
@@ -260,16 +277,16 @@ void QVirtualKeyboard::handelShift(bool checked) {
 	}
 }
 
-void QVirtualKeyboard::on_btnShiftLeft_toggled(bool checked) {
-	handelShift(checked);
-//  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
-  btnShiftRight->setChecked(btnShiftLeft->isChecked());
+void QVirtualKeyboard::on_btnShiftLeft_clicked() {
+	ShiftedIndex = (ShiftedIndex + 1) % 3;
+	btnShiftLeft->setIcon(QIcon(QPixmap(":/data/shift_" + QString::number(ShiftedIndex, 10) + ".png")));
+	btnShiftRight->setIcon(QIcon(QPixmap(":/data/shift_" + QString::number(ShiftedIndex, 10) + ".png")));
+	handelShift(ShiftedIndex == 0 ? false:true);
+    qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
 }
 
-void QVirtualKeyboard::on_btnShiftRight_toggled(bool checked) {
-	handelShift(checked);
-//	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<btnShiftLeft->isChecked()<<btnShiftRight->isChecked();
-	btnShiftLeft->setChecked(btnShiftRight->isChecked());
+void QVirtualKeyboard::on_btnShiftRight_clicked() {
+	on_btnShiftLeft_clicked();
 }
 
 /**
