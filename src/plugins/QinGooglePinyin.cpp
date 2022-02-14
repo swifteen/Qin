@@ -10,6 +10,8 @@
 #include <iterator>
 #include <algorithm>
 #include <QStringList>
+#include <QDebug>
+#include <QLatin1String>
 
 #include "pinyinime.h"//google pinyin
 #include "dictdef.h"//google pinyin
@@ -42,9 +44,9 @@ PinyinDecoderService::~PinyinDecoderService()
 PinyinDecoderService *PinyinDecoderService::getInstance()
 {
     if (!_instance)
-        _instance.reset(new PinyinDecoderService());
+        _instance.reset(new PinyinDecoderService);
     if (!_instance->init())
-        return nullptr;
+        return NULL;
     return _instance.data();
 }
 
@@ -130,8 +132,8 @@ QString PinyinDecoderService::pinyinString(bool decoded)
     const char *py = im_get_sps_str(&py_len);
     if (!decoded)
         py_len = strlen(py);
-
-    return QString(QLatin1String(py, (int)py_len));
+//    return QString(QLatin1String(py, (int)py_len));
+	return QString::fromLatin1(py, (int)py_len);
 }
 
 int PinyinDecoderService::pinyinStringLength(bool decoded)
@@ -163,9 +165,9 @@ QString PinyinDecoderService::candidateAt(int index)
     Q_ASSERT(index >= 0);
     QVector<QChar> candidateBuf;
     candidateBuf.resize(kMaxSearchSteps + 1);
-    if (!im_get_candidate(size_t(index), (char16 *)candidateBuf.data(), candidateBuf.length() - 1))
+    if (!im_get_candidate(size_t(index), (char16 *)candidateBuf.data(), candidateBuf.size() - 1))
         return QString();
-    candidateBuf.last() = u'\0';
+    candidateBuf.last() = '\0';
     return QString(candidateBuf.data());
 }
 
@@ -204,7 +206,7 @@ void PinyinDecoderService::flushCache()
 QList<QString> PinyinDecoderService::predictionList(const QString &history)
 {
     QList<QString> predictList;
-    char16 (*predictItems)[kMaxPredictSize + 1] = nullptr;
+    char16 (*predictItems)[kMaxPredictSize + 1] = NULL;
     int predictNum = int(im_get_predicts(history.utf16(), predictItems));
     predictList.reserve(predictNum);
     for (int i = 0; i < predictNum; i++)
@@ -250,11 +252,11 @@ private:
 
 QinGooglePinyin::QinGooglePinyin(void): 
 	QinIMBase(":/data/Pinyin.xml"),	
-	pinyinDecoderService(PinyinDecoderService::getInstance()),
 	state(Idle),
-	surface(),
 	totalChoicesNum(0),
 	candidatesList(),
+	pinyinDecoderService(PinyinDecoderService::getInstance()),
+	surface(),
 	fixedLen(0),
 	composingStr(),
 	activeCmpsLen(0),
@@ -262,7 +264,9 @@ QinGooglePinyin::QinGooglePinyin(void):
 	posDelSpl(-1),
 	isPosInSpl(false)
 {
-
+	candidates.clear();
+	preeditStr.clear();
+	commitStr.clear();
 }
 
 QinGooglePinyin::~QinGooglePinyin(void) {
@@ -270,7 +274,7 @@ QinGooglePinyin::~QinGooglePinyin(void) {
 
 void QinGooglePinyin::resetToIdleState()
 {
-#if 0
+#if 0//TODO
 	// Disable the user dictionary when entering sensitive data
 	if (inputContext) {
 		bool userDictionaryEnabled = !inputContext->inputMethodHints().testFlag(Qt::ImhSensitiveData);
@@ -301,7 +305,7 @@ bool QinGooglePinyin::addSpellingChar(QChar ch, bool reset)
 		surface.clear();
 		pinyinDecoderService->resetSearch();
 	}
-	if (ch == u'\'') {
+	if (ch == '\'') {
 		if (surface.isEmpty())
 			return false;
 		if (surface.endsWith(ch))
@@ -529,13 +533,13 @@ QStringList QinGooglePinyin::getPopUpStrings(void) {
 }
 
 char* QinGooglePinyin::getPreEditString(void) {
-  return strdup(preeditStr.c_str());
+  return strdup(preeditStr.toUtf8().data());
 }
 
 char* QinGooglePinyin::getCommitString(void) {
-  string str = commitStr;
+  QString str = commitStr;
   commitStr.clear();
-  return strdup(str.c_str());
+  return strdup(str.toUtf8().data());
 }
 
 void QinGooglePinyin::reset(void) {
@@ -570,7 +574,6 @@ void QinGooglePinyin::handle_Default(int keyId) {
 void QinGooglePinyin::handle_Space(void) {
 	if (state != Predict && candidatesCount() > 0) {
 		chooseAndUpdate(0);
-		return true;
 	}
 }
 

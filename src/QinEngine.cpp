@@ -25,7 +25,8 @@
 #include <QDebug>
 
 //#include "plugins/QinPinyin.h"
-#include "plugins/QinChewing.h"
+#include "plugins/QinChewing.h"//注音输入法
+#include "plugins/QinGooglePinyin.h"//参考Qt5官方实现的谷歌拼音输入法
 #include "QinIMBases.h"
 #include "QVirtualKeyboard.h"
 
@@ -35,6 +36,7 @@ QinEngine::QinEngine() {
   regInputMethod(new QinChewing());
 //  regInputMethod(new QinPinyin());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
+  regInputMethod(new QinGooglePinyin());
   defaultIM = inputMethods[0];
 	//注册数字和符号输入核心
   regNumAndSymbolInputMethod(new QinIMBase(":/data/num_symbol_ch.xml"));
@@ -89,7 +91,8 @@ bool QinEngine::getCurrentNumAndSymbolState() {
 }
 
 bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
-    bool autoRepeat) {
+    bool autoRepeat) {    
+	Q_UNUSED(mod);
   bool doSendEvent = true;
 #ifdef DEBUG
 	qDebug("DEBUG1: KeyPressed: %d, %x,isPress[%d],autoRepeat[%d]", uni, keyId,isPress,autoRepeat);

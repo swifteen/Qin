@@ -4,6 +4,7 @@
 #include "QinConfig.h"
 #include "QinIMBases.h"
 #include <QPointer>
+#include <QVector>
 
 #define PREEDIT_LENGTH_MAX 50
 
@@ -11,7 +12,7 @@ class PinyinDecoderService : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(PinyinDecoderService)
-    explicit PinyinDecoderService(QObject *parent = nullptr);
+    explicit PinyinDecoderService(QObject *parent = NULL);
 
 public:
     ~PinyinDecoderService();
@@ -87,17 +88,18 @@ class QinGooglePinyin: public QinIMBase
 	  void resetCandidates();
 	  bool canDoPrediction();
 	  void tryPredict();
+  public:
+	  State state;
+	  int totalChoicesNum;
+	  QList<QString> candidatesList;
   private:
     QStringList candidates;
-    string preeditStr;
-    string commitStr;
+    QString preeditStr;
+    QString commitStr;
 
   private:
 	  QScopedPointer<PinyinDecoderService> pinyinDecoderService;
-	  State state;
 	  QString surface;
-	  int totalChoicesNum;
-	  QList<QString> candidatesList;
 	  int fixedLen;
 	  QString composingStr;
 	  int activeCmpsLen;

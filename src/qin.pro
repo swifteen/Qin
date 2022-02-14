@@ -6,8 +6,13 @@ TEMPLATE = app
 QT += sql xml
 TARGET = 
 DEPENDPATH += . plugins
-INCLUDEPATH += . plugins 3rdparty/chewing/include
+INCLUDEPATH += . plugins
+#新酷音输入法
+INCLUDEPATH += 3rdparty/chewing/include
 LIBS += -lchewing -L$$PWD/3rdparty/chewing/lib
+#谷歌拼音输入法
+INCLUDEPATH += 3rdparty/googlepinyin/include
+LIBS += -lgooglepinyin -L$$PWD/3rdparty/googlepinyin/lib
 
 DEFINES += DEBUG
 # Input
@@ -18,8 +23,8 @@ HEADERS += \
   QinEngine.h \
   QinIMBases.h \
   QVirtualKeyboard.h \
-plugins/QinChewing.h \
-
+  plugins/QinChewing.h \
+	plugins/QinGooglePinyin.h \
 
 FORMS += QVirtualKeyboard.ui
 
@@ -28,5 +33,6 @@ SOURCES += \
   QinEngine.cpp \
   QinIMBases.cpp \
   QVirtualKeyboard.cpp \
- plugins/QinChewing.cpp \
+  plugins/QinChewing.cpp \
+  plugins/QinGooglePinyin.cpp \
 
