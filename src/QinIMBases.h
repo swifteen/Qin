@@ -98,6 +98,7 @@ class QinIMBase {
     virtual void handle_Up(void);
 };
 
+#if 0
 /**
  * @name  QinTableIMBase
  * @brief Base class for table input methods.
@@ -136,5 +137,6 @@ class QinTableIMBase: public QinIMBase {
     virtual void handle_Space(void);
     virtual void handle_Backspace(void);
 };
+#endif
 
 #endif /* __QIN_SRC_QIN_IM_BASE_H__ */

@@ -1,5 +1,5 @@
 /**
- * @file   QinIMBases.cpp
+ * @file   QinIMTables.cpp
  * @brief  
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *
@@ -21,10 +21,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "QinIMBases.h"
+#include "QinIMTables.h"
 
 #include <cstring>
-
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDomDocument>
@@ -34,200 +33,8 @@
 #include <QSqlQuery>
 #include <QTextStream>
 #include <QVariant>
-
-/* QinIMBase methods implementation */
-
-QinIMBase::QinIMBase(QString xmlpath): xmlPath(xmlpath) {
-  QFile file(xmlPath);
-  QString xmlData, err;
-  int line, column;
-
-  if (file.open(QFile::ReadOnly)) {
-    QTextStream styleIn(&file);
-    xmlData = styleIn.readAll();
-    file.close();
-  } else {
-    qDebug() << "Fatal error: can't open `" << xmlPath << "' ..."
-      << "abort.";
-    QCoreApplication::exit(1);
-  }
-
-  QDomDocument xml;
-  if (!xml.setContent(xmlData, &err, &line, &column)) {
-    qDebug() << "Fatal error: error while parsing `" << xmlPath << "', "
-      << line << ", " << column << ": " << err;
-    QCoreApplication::exit(1);
-  }
-
-  QDomElement root = xml.documentElement();
-  imName = root.firstChildElement("name").text();
-#ifdef DEBUG
-  qDebug() << "DEBUG: imName: " << imName;
-#endif
-
-  preEditable = (root.firstChildElement("preeditable").text() == "true")?
-    true: false;
-#ifdef DEBUG
-  qDebug() << "DEBUG: preEditable: " << preEditable;
-#endif
-
-  useCustomKeyMap = (root.firstChildElement("customkeymap").text() == "true")?
-    true: false;
-#ifdef DEBUG
-  qDebug() << "DEBUG: useCustomKeyMap: " << useCustomKeyMap;
-#endif
-  setupKeyMap(root.firstChildElement("keymap"));
-	m_commitStr.clear();
-}
-
-QinIMBase::~QinIMBase() {}
-
-QString QinIMBase::name(void) const {
-  return imName;
-}
-
-void QinIMBase::setUseCustomKeyMap(bool s) {
-  useCustomKeyMap = s;
-}
-
-bool QinIMBase::getUseCustomKeyMap(void) {
-  return useCustomKeyMap;
-}
-
-void QinIMBase::setPreEditable(bool s) {
-  preEditable = s;
-}
-
-bool QinIMBase::getPreEditable(void) {
-  return preEditable;
-}
-
-void QinIMBase::setupKeyMap(const QDomElement& keymap) {
-  if (keymap.isNull()) return;
-
-  /* Mapping normal mode keymap */
-  QDomElement normal = keymap.firstChildElement("normal");
-  if (normal.isNull()) {
-    qDebug() << "Fatal error: normal keymap not set!";
-    QCoreApplication::exit(1);
-  }
-
-  QDomNode node = normal.firstChild();
-  QDomElement nodeElement;
-  QString attr;
-  while (!node.isNull()) {
-    nodeElement = node.toElement();
-    attr = nodeElement.attribute("value");
-    fromStdKB_hash[attr] = nodeElement.text();
-    node = node.nextSibling();
-  }
-
-  /* Mapping shift mode keymap */
-  QDomElement shift = keymap.firstChildElement("shift");
-  if (shift.isNull()) {
-    qDebug() << "Fatal error: shift keymap not set!";
-    QCoreApplication::exit(1);
-  }
-  node = shift.firstChild();
-  while (!node.isNull()) {
-    nodeElement = node.toElement();
-    attr = nodeElement.attribute("value");
-    fromShiftStdKB_hash[attr] = nodeElement.text();
-    node = node.nextSibling();
-//	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<nodeElement.text()<<attr<<fromShiftStdKB_hash[attr];
-  }
-}
-
-bool QinIMBase::getDoPopUp(void) {
-  return false;
-}
-
-QStringList QinIMBase::getPopUpStrings(void) {
-  return QStringList();
-}
-
-bool QinIMBase::isPreEditing(void) {
-  return false;
-}
-
-char* QinIMBase::getPreEditString(void) {
-  return NULL;
-}
-
-char* QinIMBase::getCommitString(void) {
-	char* commitStr = NULL;
-	const char* cstr = NULL;
-	
-	if (!m_commitStr.isEmpty()) {
-	  cstr = m_commitStr.toStdString().c_str();
-	  commitStr = new char[strlen(cstr) + 1];
-	  memcpy(commitStr, cstr, strlen(cstr));
-	  commitStr[strlen(cstr)] = 0;
-	  m_commitStr.clear();
-	}
-	return commitStr;
-}
-
-int QinIMBase::cursorCurrent(void) {
-  return -1;
-}
-
-void QinIMBase::setCursor(int) {}
-
-QString QinIMBase::fromStdKB(QString str) {
-  return (fromStdKB_hash.find(str) != fromStdKB_hash.end())?
-    fromStdKB_hash[str]: str;
-}
-
-QString QinIMBase::fromShiftStdKB(QString str) {
-#if 0
-    return (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) ?
-           fromShiftStdKB_hash[str] : str;
-#else
-    if (fromShiftStdKB_hash.find(str) != fromShiftStdKB_hash.end()) {
-        qDebug() << "XXX " << str << " XXX-1";
-
-        if (fromShiftStdKB_hash[str] == "&") {
-            return "&&";
-        }
-
-        return fromShiftStdKB_hash[str];
-    }
-    else {
-        qDebug() << "XXX " << str << " XXX0";
-        return str;
-    }
-
-#endif
-}
-
-void QinIMBase::reset(void) {}
-void QinIMBase::update(void) {}
-void QinIMBase::handle_Alt(void) {}
-void QinIMBase::handle_Backspace(void) {}
-void QinIMBase::handle_Capslock(void) {}
-void QinIMBase::handle_Ctrl(void) {}
-void QinIMBase::handle_Default(int unicode, int keycode) {}
-void QinIMBase::handle_Del(void) {}
-void QinIMBase::handle_Down(void) {}
-void QinIMBase::handle_End(void) {}
-void QinIMBase::handle_Enter(void) {}
-void QinIMBase::handle_Esc(void) {}
-void QinIMBase::handle_Home(void) {}
-void QinIMBase::handle_Left(void) {}
-void QinIMBase::handle_PageDown(void) {}
-void QinIMBase::handle_PageUp(void) {}
-void QinIMBase::handle_Right(void) {}
-void QinIMBase::handle_Space(void) {
-	m_commitStr = " ";
-}
-void QinIMBase::handle_Tab(void) {}
-void QinIMBase::handle_Up(void) {}
-
-
 /* QinTableIMBase methods implementation */
 
-#if 0
 QinTableIMBase::QinTableIMBase(QString xmlpath): QinIMBase(xmlpath) {
   QFile file(xmlPath);
   QString xmlData, err;
@@ -375,15 +182,15 @@ char* QinTableIMBase::getCommitString(void) {
   return commitStr;
 }
 
-void QinTableIMBase::handle_Default(int unicode, int keycode) {
+void QinTableIMBase::handle_Default(int keyId) {
   int keys[] = SELKEYS;
 
   if (keyIndex == maxKeyStrokes)
     return;
-//如果之前存在合成的输出结果，如果当前为数字键，则选中数字选择的字作为输出结果
+
   if (results.size()) {
     for (size_t i = 0; i < SELKEY_COUNT; ++i)
-      if (keycode == keys[i]) {
+      if (keyId == keys[i]) {
         commitString = results[i];
         results.clear();
         keyIndex = 0;
@@ -391,10 +198,10 @@ void QinTableIMBase::handle_Default(int unicode, int keycode) {
       }
   }
 
-  if (keyTransform.find(tolower(keycode)) == keyTransform.end())
+  if (keyTransform.find(tolower(keyId)) == keyTransform.end())
     return;
 
-  keyStrokes[keyIndex++] = keycode;
+  keyStrokes[keyIndex++] = keyId;
   doQuery();
 }
 
@@ -420,4 +227,3 @@ void QinTableIMBase::handle_Backspace(void) {
     --keyIndex;
   doQuery();
 }
-#endif

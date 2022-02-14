@@ -28,6 +28,8 @@
 #include "plugins/QinChewing.h"//注音输入法
 #include "plugins/QinGooglePinyin.h"//参考Qt5官方实现的谷歌拼音输入法
 #include "QinIMBases.h"
+#include "QinIMTables.h"
+
 #include "QVirtualKeyboard.h"
 
 QinEngine::QinEngine() {
