@@ -12,6 +12,5 @@
 	<file>data/shift_0.png</file>
 	<file>data/shift_1.png</file>
 	<file>data/shift_2.png</file>
-	<file>data/count_1w.txt</file>
   </qresource>
 </RCC>
