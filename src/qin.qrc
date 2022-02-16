@@ -4,11 +4,14 @@
     <file>data/English.xml</file>
     <file>data/Chewing.xml</file>
     <file>data/Boshiamy.xml</file>
+	<file>data/Wubi.xml</file>
+	<file>data/Cangjie.xml</file>
     <file>data/Pinyin.xml</file>
 	<file>data/hidekeyboard.png</file>
 	<file>data/num_symbol_ch.xml</file>
 	<file>data/shift_0.png</file>
 	<file>data/shift_1.png</file>
 	<file>data/shift_2.png</file>
+	<file>data/count_1w.txt</file>
   </qresource>
 </RCC>

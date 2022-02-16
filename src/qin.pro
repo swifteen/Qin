@@ -23,6 +23,8 @@ HEADERS += \
   QinEngine.h \
   QinIMBases.h \
   QinIMTables.h \
+  QinIMWubi.h \
+  QinIMCangjie.h \
   QVirtualKeyboard.h \
   plugins/QinChewing.h \
 	plugins/QinGooglePinyin.h \
@@ -34,6 +36,8 @@ SOURCES += \
   QinEngine.cpp \
   QinIMBases.cpp \
   QinIMTables.cpp \
+  QinIMWubi.cpp \
+  QinIMCangjie.cpp \
   QVirtualKeyboard.cpp \
   plugins/QinChewing.cpp \
   plugins/QinGooglePinyin.cpp \

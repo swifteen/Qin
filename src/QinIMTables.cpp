@@ -20,10 +20,6 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-#include "QinIMTables.h"
-
-#include <cstring>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDomDocument>
@@ -32,10 +28,12 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QTextStream>
-#include <QVariant>
+
+#include "QinIMTables.h"
 /* QinTableIMBase methods implementation */
 
 QinTableIMBase::QinTableIMBase(QString xmlpath): QinIMBase(xmlpath) {
+	qDebug()<<__LINE__<<__func__;
   QFile file(xmlPath);
   QString xmlData, err;
   int line, column;
@@ -101,7 +99,7 @@ QinTableIMBase::QinTableIMBase(QString xmlpath): QinIMBase(xmlpath) {
 
 QinTableIMBase::~QinTableIMBase() {
   database.close();
-  delete [] keyStrokes;
+  delete[] keyStrokes;
 }
 
 QString QinTableIMBase::getQueryTemplate(void) {
@@ -109,14 +107,17 @@ QString QinTableIMBase::getQueryTemplate(void) {
 }
 
 bool QinTableIMBase::isPreEditing(void) {
+  qDebug()<<__LINE__<<__func__;
   return keyIndex != 0;
 }
 
 bool QinTableIMBase::getDoPopUp(void) {
+  qDebug()<<__LINE__<<__func__;
   return true;
 }
 
 QStringList QinTableIMBase::getPopUpStrings(void) {
+  qDebug()<<__LINE__<<__func__;
   return results;
 }
 
@@ -124,16 +125,21 @@ void QinTableIMBase::doQuery(void) {
   int count = 0;
   QString queryTemplate = getQueryTemplate();
   QString query = queryTemplate;
+  qDebug()<<__LINE__<<__func__<<maxKeyStrokes;
+  qDebug()<<__LINE__<<__func__<<keyIndex;
+  qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX0";
   
   for (int i = 0; i < maxKeyStrokes; ++i) {
     if (i < keyIndex) {
       query = query.arg("m%1=%2%3").arg(i).arg(
           keyTransform[tolower(keyStrokes[i])]);
+	  //qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX1";
       if (i != keyIndex -1)
         query = query.arg(" AND %1");
       else
         query = query.arg("");
-    }
+	 //qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX2";
+	}
   }
 
 #ifdef DEBUG
@@ -142,12 +148,16 @@ void QinTableIMBase::doQuery(void) {
 
   results.clear();
   QSqlQuery queryResults = database.exec(query);
-  
   while (queryResults.next() && count++ < 10)
     results += queryResults.value(0).toString();
+
+  qDebug()<<__LINE__<<__func__;
+  qDebug()<<results;
 }
 
 char* QinTableIMBase::getPreEditString(void) {
+	qDebug()<<__LINE__<<__func__;
+
   char* preEditStr = NULL;
   const char* cstr = NULL;
 
@@ -169,6 +179,8 @@ char* QinTableIMBase::getPreEditString(void) {
 }
 
 char* QinTableIMBase::getCommitString(void) {
+	qDebug()<<__LINE__<<__func__;
+
   char* commitStr = NULL;
   const char* cstr = NULL;
 
@@ -183,23 +195,28 @@ char* QinTableIMBase::getCommitString(void) {
 }
 
 void QinTableIMBase::handle_Default(int keyId) {
+  qDebug()<<__LINE__<<__func__<<"无虾米";
   int keys[] = SELKEYS;
-
-  if (keyIndex == maxKeyStrokes)
-    return;
-
   if (results.size()) {
     for (size_t i = 0; i < SELKEY_COUNT; ++i)
       if (keyId == keys[i]) {
         commitString = results[i];
+		 qDebug()<<__LINE__<<__func__<<commitString;
         results.clear();
         keyIndex = 0;
         return;
       }
   }
 
-  if (keyTransform.find(tolower(keyId)) == keyTransform.end())
-    return;
+  if (keyIndex == maxKeyStrokes){
+  	  qDebug()<<__LINE__<<__func__<<keyIndex<<maxKeyStrokes<<"wwwwwwwwwwwwwwwwww1";
+	  return;
+  }
+
+  if (keyTransform.find(tolower(keyId)) == keyTransform.end()){
+	qDebug()<<__LINE__<<__func__<<"wwwwwwwwwwwwwwwwwwwwwwwwww";
+	return;
+  }
 
   keyStrokes[keyIndex++] = keyId;
   doQuery();

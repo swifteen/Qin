@@ -23,7 +23,6 @@
 #ifndef __QIN_SRC_QIN_IM_TABLE_H__
 #define __QIN_SRC_QIN_IM_TABLE_H__
 
-#include <QDomElement>
 #include <QHash>
 #include <QSqlDatabase>
 #include <QStringList>
@@ -38,10 +37,10 @@ class QinTableIMBase: public QinIMBase {
   protected:
     QString dbPath;
     QSqlDatabase database;
-    QString commitString;
-    QStringList results;
     QString queryTemplate;
     QHash<int, int> keyTransform;
+	QString commitString;
+    QStringList results;
     int* keyStrokes;
     int maxKeyStrokes;
     int keyIndex;

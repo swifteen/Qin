@@ -23,8 +23,9 @@
 <QinIM>
   <name>English</name>
   <tableim>false</tableim>
-  <preeditable>false</preeditable>
+  <preeditable>true</preeditable>
   <customkeymap>true</customkeymap>
+  <maxkeystrokes>20</maxkeystrokes>
   <keymap>
     <normal>
       <key value="`">`</key>

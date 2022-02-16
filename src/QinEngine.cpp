@@ -29,6 +29,9 @@
 #include "plugins/QinGooglePinyin.h"//参考Qt5官方实现的谷歌拼音输入法
 #include "QinIMBases.h"
 #include "QinIMTables.h"
+#include "QinIMWubi.h"
+#include "QinIMCangjie.h"
+
 
 #include "QVirtualKeyboard.h"
 
@@ -38,6 +41,8 @@ QinEngine::QinEngine() {
   regInputMethod(new QinChewing());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   regInputMethod(new QinGooglePinyin(this));
+  regInputMethod(new QinWubiIMBase(":/data/Wubi.xml"));
+  regInputMethod(new QinCangjieIMBase(":/data/Cangjie.xml"));
   defaultIM = inputMethods[0];
 	//注册数字和符号输入核心，符号和数字输入在不同的语言下存在差异
   regNumAndSymbolInputMethod(new QinIMBase(":/data/num_symbol_ch.xml"));
@@ -211,6 +216,7 @@ void QinEngine::queryResponse(int property, const QVariant& result)
 
 void QinEngine::updateCommitString() {
   char* commit_str = currentIM->getCommitString();
+  qDebug()<<"XXXX "<<commit_str;
   if (commit_str) {
     sendCommitString(commit_str);
     delete commit_str;
