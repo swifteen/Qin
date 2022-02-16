@@ -66,7 +66,7 @@ class QinGooglePinyin: public QinIMBase
 	  virtual void reset(void);
 	  virtual void update(void);
 	  /** Key handling APIs **/
-	  virtual void handle_Default(int keyId);
+	  virtual void handle_Default(int unicode, int keycode);
 	  virtual void handle_Space(void);
 	  virtual void handle_Esc(void);
 	  virtual void handle_Enter(void);

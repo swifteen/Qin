@@ -55,7 +55,7 @@ class QinChewing: public QinIMBase {
     virtual void reset(void);
 
     /** Key handling APIs **/
-    virtual void handle_Default(int keyId);
+    virtual void handle_Default(int unicode, int keycode);
     virtual void handle_Space(void);
     virtual void handle_Esc(void);
     virtual void handle_Enter(void);

@@ -90,25 +90,25 @@ bool QinEngine::getCurrentNumAndSymbolState() {
   return m_bNumAndSymbol;
 }
 
-bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
-    bool autoRepeat) {    
-	Q_UNUSED(mod);
+bool QinEngine::filter(int unicode, int keycode, int modifiers, bool isPress, bool autoRepeat)
+{    
+	Q_UNUSED(modifiers);
   bool doSendEvent = true;
 #ifdef DEBUG
-	qDebug("DEBUG1: KeyPressed: %d, %x,isPress[%d],autoRepeat[%d]", uni, keyId,isPress,autoRepeat);
+	qDebug("DEBUG1: KeyPressed: %d, %x,isPress[%d],autoRepeat[%d]", unicode, keycode,isPress,autoRepeat);
 #endif
 
   if (!isPress)
     return false;
 
 #ifdef DEBUG
-  qDebug("DEBUG: KeyPressed: %d, %x", uni, keyId);
+  qDebug("DEBUG: KeyPressed: %d,%d, %x,%d,%d", unicode, keycode, keycode,keycode >= Qt::Key_A , keycode <= Qt::Key_Z);
 #endif
 
-  if (!currentIM->getPreEditable() && (Qt::Key_Space != keyId))//用于解决英文输入下，按空格无效
+  if (!currentIM->getPreEditable() && (Qt::Key_Space != keycode))//用于解决英文输入下，按空格无效
     return false;
 
-  switch (keyId) {
+  switch (keycode) {
     case Qt::Key_Space:
       if (currentIM->isPreEditing()) doSendEvent = false;
       currentIM->handle_Space();
@@ -143,9 +143,10 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
     case Qt::Key_Control: currentIM->handle_Ctrl(); break;
     case Qt::Key_Alt: currentIM->handle_Alt(); break;
     default:
-      if (keyId & Qt::Key_Escape)
+      if (keycode & Qt::Key_Escape)
         return true;
-      currentIM->handle_Default(keyId);
+	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<(keycode >= Qt::Key_A) << (keycode <= Qt::Key_Z);
+      currentIM->handle_Default(unicode,keycode);
       doSendEvent = false;
   }
 //从输入法核心中获取Commit String，并上屏

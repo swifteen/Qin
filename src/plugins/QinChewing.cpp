@@ -198,8 +198,9 @@ void QinChewing::reset(void) {
   chewing_handle_Esc(chewContext);
 }
 
-void QinChewing::handle_Default(int keyId) {
-  chewing_handle_Default(chewContext, tolower(keyId));
+void QinChewing::handle_Default(int unicode, int keycode) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<keycode<<tolower(keycode);
+  chewing_handle_Default(chewContext, tolower(keycode));
 
 }
 

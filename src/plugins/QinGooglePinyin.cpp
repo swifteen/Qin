@@ -75,6 +75,7 @@ bool PinyinDecoderService::init()
         qCWarning(lcPinyin) << "Could not initialize pinyin engine. sys_dict:" << sysDict << "usr_dict:" << usrDictInfo.absoluteFilePath();
 #endif
 	initDone = im_open_decoder(GOOGLE_PINYIN_DEFALUT_DICT_PATH, GOOGLE_PINYIN_USER_DICT_PATH);
+qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<initDone;
     if (!initDone)
         qDebug() << "Could not initialize google pinyin engine.";
     return initDone;
@@ -291,6 +292,7 @@ void QinGooglePinyin::resetToIdleState()
 	fixedLen = 0;
 	finishSelection = true;
 	composingStr.clear();
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<preeditStr;
 	preeditStr.clear();
 	activeCmpsLen = 0;
 	posDelSpl = -1;
@@ -336,6 +338,7 @@ void QinGooglePinyin::chooseAndUpdate(int candId)
 		if ((candId >= 0 || finishSelection) && composingStr.length() == fixedLen) {
 			QString resultStr = getComposingStrActivePart();
 			tryPredict();
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<resultStr;
 //			q->inputContext()->commit(resultStr);
 			commitStr = resultStr;
 		} else if (state == Idle) {
@@ -405,6 +408,7 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 			resetToIdleState();
 			if (!resultStr.isEmpty())
 			{
+				qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<resultStr;
 //				q->inputContext()->commit(resultStr);
 				commitStr = resultStr;
 			}
@@ -440,6 +444,7 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 		if (surfaceDecodedLen < surface.length())
 			composingStrDisplay += surface.mid(surfaceDecodedLen).toLower();
 	}
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<composingStrDisplay;
 //	q->inputContext()->setPreeditText(composingStrDisplay);
 	preeditStr = composingStrDisplay;
 
@@ -520,29 +525,35 @@ void QinGooglePinyin::tryPredict()
 
 //用于输入空格后判断是否需要处理空格按键
 bool QinGooglePinyin::isPreEditing(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<preeditStr<<preeditStr.length();
   return preeditStr.length() > 0;
 }
 
 //判断是否存在侯选词，如果存在则从输入法核心中获取选词列表，并显示在侯选列表
 bool QinGooglePinyin::getDoPopUp(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candidatesCount();
   return (candidatesCount() > 0);
 }
 
 QStringList QinGooglePinyin::getPopUpStrings(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candidates;
   return candidates;
 }
 
 char* QinGooglePinyin::getPreEditString(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<preeditStr;
   return strdup(preeditStr.toUtf8().data());
 }
 
 char* QinGooglePinyin::getCommitString(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<commitStr;
   QString str = commitStr;
   commitStr.clear();
   return strdup(str.toUtf8().data());
 }
 
 void QinGooglePinyin::reset(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
     ScopedCandidateListUpdate scopedCandidateListUpdate(this);
     Q_UNUSED(scopedCandidateListUpdate);
     resetToIdleState();
@@ -550,17 +561,22 @@ void QinGooglePinyin::reset(void) {
 
 void QinGooglePinyin::update(void)
 {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
     ScopedCandidateListUpdate scopedCandidateListUpdate(this);
     Q_UNUSED(scopedCandidateListUpdate);
     chooseAndFinish();
     tryPredict();
 }
 
-void QinGooglePinyin::handle_Default(int keyId) {
-	if ((keyId >= Qt::Key_A && keyId <= Qt::Key_Z) || (keyId == Qt::Key_Apostrophe)) {
+void QinGooglePinyin::handle_Default(int unicode, int keycode) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<tolower(keycode)<<Qt::Key_A<<Qt::Key_Z<<QString("%1").arg(Qt::Key_A, 0, 16)<<QString("%1").arg(Qt::Key_Z, 0, 16);
+//	keycode = keycode-0x20;
+	if ((keycode >= Qt::Key_A && keycode <= Qt::Key_Z) || (keycode == Qt::Key_Apostrophe)) {
+		
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state;
 		if (state == Predict)
 			resetToIdleState();
-		if (addSpellingChar(tolower(keyId), state == Idle)) //TODO
+		if (addSpellingChar(unicode, state == Idle)) //TODO
 		{
 			chooseAndUpdate(-1);
 		}
@@ -572,6 +588,8 @@ void QinGooglePinyin::handle_Default(int keyId) {
 }
 
 void QinGooglePinyin::handle_Space(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount();
+
 	if (state != Predict && candidatesCount() > 0) {
 		chooseAndUpdate(0);
 	}
@@ -581,9 +599,11 @@ void QinGooglePinyin::handle_Esc(void) {
 }
 
 void QinGooglePinyin::handle_Enter(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface;
   if (state != Predict && candidatesCount() > 0) {
 	  commitStr = surface;
-	  resetToIdleState();
+	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<surface;
+	  resetToIdleState();  
 //	  inputContext()->commit(surface);
   }
 }
@@ -599,12 +619,14 @@ void QinGooglePinyin::handle_Backspace(void) {
 }
 
 void QinGooglePinyin::handle_Left(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr;
   if (preeditStr.length() > 0) {
 
   }
 }
 
 void QinGooglePinyin::handle_Right(void) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr;
   if (preeditStr.length() > 0) {
 
   }

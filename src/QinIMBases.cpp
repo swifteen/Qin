@@ -134,7 +134,7 @@ void QinIMBase::setupKeyMap(const QDomElement& keymap) {
     attr = nodeElement.attribute("value");
     fromShiftStdKB_hash[attr] = nodeElement.text();
     node = node.nextSibling();
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<nodeElement.text()<<attr<<fromShiftStdKB_hash[attr];
+//	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<nodeElement.text()<<attr<<fromShiftStdKB_hash[attr];
   }
 }
 
@@ -207,7 +207,7 @@ void QinIMBase::handle_Alt(void) {}
 void QinIMBase::handle_Backspace(void) {}
 void QinIMBase::handle_Capslock(void) {}
 void QinIMBase::handle_Ctrl(void) {}
-void QinIMBase::handle_Default(int) {}
+void QinIMBase::handle_Default(int unicode, int keycode) {}
 void QinIMBase::handle_Del(void) {}
 void QinIMBase::handle_Down(void) {}
 void QinIMBase::handle_End(void) {}
@@ -372,7 +372,7 @@ char* QinTableIMBase::getCommitString(void) {
   return commitStr;
 }
 
-void QinTableIMBase::handle_Default(int keyId) {
+void QinTableIMBase::handle_Default(int unicode, int keycode) {
   int keys[] = SELKEYS;
 
   if (keyIndex == maxKeyStrokes)
@@ -380,7 +380,7 @@ void QinTableIMBase::handle_Default(int keyId) {
 
   if (results.size()) {
     for (size_t i = 0; i < SELKEY_COUNT; ++i)
-      if (keyId == keys[i]) {
+      if (keycode == keys[i]) {
         commitString = results[i];
         results.clear();
         keyIndex = 0;
@@ -388,10 +388,10 @@ void QinTableIMBase::handle_Default(int keyId) {
       }
   }
 
-  if (keyTransform.find(tolower(keyId)) == keyTransform.end())
+  if (keyTransform.find(tolower(keycode)) == keyTransform.end())
     return;
 
-  keyStrokes[keyIndex++] = keyId;
+  keyStrokes[keyIndex++] = keycode;
   doQuery();
 }
 
