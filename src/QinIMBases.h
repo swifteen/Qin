@@ -43,7 +43,7 @@ class QinIMBase {
     QString xmlPath;
     QString imName;
     bool useCustomKeyMap;
-    bool preEditable;
+    bool preEditable;//为flase代表像英语字母输入法，输入后直接上屏，为true代表像拼音输入法，输入后不直接上屏，还存在候选
 	private:
 		QString m_commitStr;//用于解决英文输入下，按空格无效
   public:

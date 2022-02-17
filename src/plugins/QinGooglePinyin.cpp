@@ -637,8 +637,7 @@ void QinGooglePinyin::update(void)
 }
 
 void QinGooglePinyin::handle_Default(int unicode, int keycode) {
-	if ((keycode >= Qt::Key_A && keycode <= Qt::Key_Z) || (keycode == Qt::Key_Apostrophe)) {
-		
+	if (((Qt::Key_A <= keycode) && (keycode <= Qt::Key_Z)) || (keycode == Qt::Key_Apostrophe)) {
 	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state;
 		if (state == Predict)
 			resetToIdleState();
@@ -649,15 +648,30 @@ void QinGooglePinyin::handle_Default(int unicode, int keycode) {
 			chooseAndUpdate(-1);
 		}
 	}
+	else if((Qt::Key_0 <= keycode) && (keycode <= Qt::Key_9))//选择候选词
+	{
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state<<keycode - Qt::Key_0;
+		if(candidatesCount() > 0)
+		{
+			int pos = m_selectRangeCache.at(m_iCurSelectPage).pos;
+			int selectIdx = keycode - Qt::Key_0;
+			if(selectIdx == 0)//代表选择了界面上的第10个词
+			{
+				selectIdx += 9;
+			}
+			else
+			{
+				selectIdx -= 1;
+			}
+			commitStr = candidateAt(pos + selectIdx);
+			resetToIdleState();  
+		}
+	}
 	else//其它输入则完成输入
 	{
 		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state;
 		chooseAndFinish();
 	}
-//	if(keycode >= Qt::Key_0 && keycode <= Qt::Key_9))
-//	{
-//		int idx = keycode - Qt::Key_0;
-//	}
 }
 
 void QinGooglePinyin::handle_Space(void) {
