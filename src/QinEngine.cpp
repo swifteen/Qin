@@ -35,7 +35,7 @@ QinEngine::QinEngine() {
   regInputMethod(new QinIMBase(":/data/English.xml"));
   regInputMethod(new QinChewing());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
-  regInputMethod(new QinGooglePinyin());
+  regInputMethod(new QinGooglePinyin(this));
   defaultIM = inputMethods[0];
 	//注册数字和符号输入核心，符号和数字输入在不同的语言下存在差异
   regNumAndSymbolInputMethod(new QinIMBase(":/data/num_symbol_ch.xml"));
@@ -157,7 +157,7 @@ bool QinEngine::filter(int unicode, int keycode, int modifiers, bool isPress, bo
   if (currentIM->getDoPopUp())
   {
 	  vkeyboard->showCandStrBar(currentIM->getPopUpStrings());
-	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"show cans bar";
   }
   else
   {
@@ -165,7 +165,7 @@ bool QinEngine::filter(int unicode, int keycode, int modifiers, bool isPress, bo
   }
 //设置PreEdit String中的光标位置
   selectPreEditWord(currentIM->cursorCurrent());
-
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"filter end";
   return !doSendEvent;//返回true，则阻止事件做进一步处理
 }
 	
@@ -180,6 +180,31 @@ bool QinEngine::filter(const QPoint& point, int state, int wheel)
 		}			
 	}
 	return QWSInputMethod::filter(point,state,wheel);
+}
+void QinEngine::sendIMQuery(int property)
+{
+	QWSInputMethod::sendQuery(property);
+}
+
+void QinEngine::queryResponse(int property, const QVariant& result)
+{
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<property<<result;
+	switch (property)
+	{
+	case Qt::ImCursorPosition:
+		m_cursorPosition = result.toInt();
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<m_cursorPosition;
+		break;
+	case Qt::ImSurroundingText:
+		m_surroundingText = result.toString();
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<m_surroundingText;
+		break;
+	case Qt::ImMicroFocus:
+		
+		break;		
+	default:
+		break;
+	}
 }
 
 void QinEngine::updateCommitString() {
@@ -198,6 +223,7 @@ void QinEngine::updatePreEditBuffer() {
 }
 
 void QinEngine::updateHandler(int type) {
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<type;
   switch (type) {
     case QWSInputMethod::FocusIn:
       currentIM->reset();

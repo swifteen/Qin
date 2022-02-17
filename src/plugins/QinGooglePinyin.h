@@ -5,6 +5,7 @@
 #include "QinIMBases.h"
 #include <QPointer>
 #include <QVector>
+#include <QWSInputMethod>
 
 #define PREEDIT_LENGTH_MAX 50
 
@@ -52,7 +53,7 @@ class QinGooglePinyin: public QinIMBase
 			Input,
 			Predict
 		};
-	  QinGooglePinyin(void);
+	  QinGooglePinyin(QWSInputMethod* ime);
 	  virtual ~QinGooglePinyin(void);
 	
 	  virtual bool isPreEditing(void);
@@ -100,6 +101,7 @@ class QinGooglePinyin: public QinIMBase
 		}SelectRange;
 		QVector<SelectRange> m_selectRangeCache;//缓存候选列表每一页的范围
 		int m_iCurSelectPage;//候选词列表显示页
+		QWSInputMethod* m_ime;//用于获取输入框光标位置和文字
   private:
 	  QScopedPointer<PinyinDecoderService> pinyinDecoderService;
 	  QString surface;

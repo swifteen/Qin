@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QDebug>
 #include <QLatin1String>
+#include "QinEngine.h"
 
 #include "pinyinime.h"//google pinyin
 #include "dictdef.h"//google pinyin
@@ -28,7 +29,10 @@ PinyinDecoderService::PinyinDecoderService(QObject *parent) :
 
 PinyinDecoderService::~PinyinDecoderService()
 {
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
     if (initDone) {
+		
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
         im_close_decoder();
         initDone = false;
     }
@@ -248,12 +252,13 @@ private:
     QinGooglePinyin::State state;
 };
 
-QinGooglePinyin::QinGooglePinyin(void): 
+QinGooglePinyin::QinGooglePinyin(QWSInputMethod* ime): 
 	QinIMBase(":/data/Pinyin.xml"),	
 	state(Idle),
 	totalChoicesNum(0),
 	candidatesList(),
 	m_iCurSelectPage(0),
+	m_ime(ime),
 	pinyinDecoderService(PinyinDecoderService::getInstance()),
 	surface(),
 	fixedLen(0),
@@ -269,6 +274,8 @@ QinGooglePinyin::QinGooglePinyin(void):
 }
 
 QinGooglePinyin::~QinGooglePinyin(void) {
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+
 }
 
 void QinGooglePinyin::resetToIdleState()
@@ -507,13 +514,24 @@ void QinGooglePinyin::tryPredict()
 	if (canDoPrediction()) {
 		if (state != Predict)
 			resetToIdleState();
-#if 0//TODO
+#if 0//TODO Qt4和Qt5在获取输入框的光标位置的方法上存在很大差异，在Qt4的qws框架中使用进程间通信
 		QVirtualKeyboardInputContext *inputContext = q->inputContext();
 		int cursorPosition = inputContext->cursorPosition();
 		int historyStart = qMax(0, cursorPosition - 3);
 		QString history = inputContext->surroundingText().mid(historyStart, cursorPosition - historyStart);
 		candidatesList = pinyinDecoderService->predictionList(history);
+#else
+//TODO 通过测试实现根据当前的输入进行联想，在Qt5中获取当前光标和文本是同步的，而Qt4中是异步的，处理起来有点复杂
+//		QinEngine* ime = qobject_cast<QinEngine*>(m_ime);
+//		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+
+//	    ime->sendIMQuery(Qt::ImCursorPosition);
+//		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+//	    ime->sendIMQuery(Qt::ImSurroundingText);
+//		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+		
 #endif
+		
 		totalChoicesNum = candidatesList.size();
 		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<totalChoicesNum;
 		finishSelection = false;
@@ -590,7 +608,7 @@ QStringList QinGooglePinyin::getPopUpStrings(void) {
 				break;
 			}
 			QString str = candidateAt(prevPos + length + i);//只能调用此函数来遍历，候选词列表不是一次性全部取出的
-			totalWidth += fm.width(str);
+			totalWidth += fm.width(str);//TODO：还需要考虑增加词与词之间的margin间隔
 			if(totalWidth > MAX_SELECT_WIDTH)
 			{
 				qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"last word width limit:"<<prevPos<<length<<i<<totalCount;
@@ -663,8 +681,15 @@ void QinGooglePinyin::handle_Default(int unicode, int keycode) {
 			{
 				selectIdx -= 1;
 			}
+			m_iCurSelectPage = 0;
+			m_selectRangeCache.clear();
+			ScopedCandidateListUpdate scopedCandidateListUpdate(this);
+			chooseAndUpdate(pos + selectIdx);
+			
+#if 0
 			commitStr = candidateAt(pos + selectIdx);
 			resetToIdleState();  
+#endif
 		}
 	}
 	else//其它输入则完成输入

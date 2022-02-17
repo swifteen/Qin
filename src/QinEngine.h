@@ -42,9 +42,11 @@ class QinEngine: public QWSInputMethod {
     void setCurrentIM(int index);
 	void setCurrentNumAndSymbolIM(int index);
 	bool getCurrentNumAndSymbolState();
+	void sendIMQuery(int property);
 private:	
   bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
   bool filter(const QPoint& point, int state, int wheel);
+  virtual void queryResponse(int property, const QVariant& result);
   void updateHandler(int type);
   void mouseHandler(int offset, int state);
   void updateCommitString();
@@ -59,6 +61,8 @@ private:
     QinIMBase* currentIM;
     int selected;
 	bool m_bNumAndSymbol;//当前状态是否为符号和数字输入
+	int m_cursorPosition;
+	QString m_surroundingText;
 };
 
 #endif /* __QIN_SRC_QIN_ENGINE_H__ */

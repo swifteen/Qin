@@ -444,11 +444,11 @@ void QVirtualKeyboard::s_on_btnCands_clicked(QWidget* btn) {
 		  int keyId = strKeyId.toInt(&isOk, 16);
 		
 #ifdef DEBUG
-		  qDebug() << "DEBUG: selected = " << btn<<keyId<<isOk;
+		  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<< "DEBUG: selected = " << btn<<keyId<<isOk;
 #endif
 		
 		  QWSServer::sendKeyEvent(0, keyId, Qt::NoModifier, true, false);
-		  clearCandStrBar();
+//		  clearCandStrBar();
 	}
 }
 
@@ -466,7 +466,7 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   int keys[] = SELKEYS;
 
 #ifdef DEBUG
-  qDebug() << "DEBUG: cands: " << strlist;
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<< "DEBUG: cands: " << strlist;
 #endif
 
   /* Make surce previous is cleared */
