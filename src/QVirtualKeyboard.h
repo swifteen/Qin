@@ -32,6 +32,7 @@
 #include <QVector>
 #include <QWidget>
 #include <QWSInputMethod>
+#include <QToolButton>
 
 QT_BEGIN_NAMESPACE
 class QinEngine;

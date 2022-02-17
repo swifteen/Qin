@@ -31,7 +31,7 @@
 
 #include "QinEngine.h"
 #include "QinIMBases.h"
-
+#define MAX_SELECT_PANEL_HEIGHT	(50)
 QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
 :QWidget(0, Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint)
 {
@@ -48,9 +48,9 @@ QVirtualKeyboard::QVirtualKeyboard(QinEngine* im)
                                   Qt::FramelessWindowHint |
                                   Qt::WindowStaysOnTopHint);
   selectPanel->move((QApplication::desktop()->width() - width())/2,
-      QApplication::desktop()->height() - height() - 27);
-  selectPanel->setMinimumSize(width(), 27);
-  selectPanel->setMaximumSize(width(), 27);
+      QApplication::desktop()->height() - height() - MAX_SELECT_PANEL_HEIGHT);
+  selectPanel->setMinimumSize(width(), MAX_SELECT_PANEL_HEIGHT);
+  selectPanel->setMaximumSize(width(), MAX_SELECT_PANEL_HEIGHT);
   selectPanel->setLayout(layout);
   selectPanel->hide();
 
@@ -114,12 +114,15 @@ void QVirtualKeyboard::on_btnLoc_clicked(void) {
     this->move((QApplication::desktop()->width() - width())/2,
         QApplication::desktop()->height() - height());
     selectPanel->move((QApplication::desktop()->width() - width())/2,
-        QApplication::desktop()->height() - height() - 27);
+        QApplication::desktop()->height() - height() - MAX_SELECT_PANEL_HEIGHT);
   }
 }
 
 void QVirtualKeyboard::s_on_btn_clicked(int btn) {
   QString strKeyId = allButtons.at(btn)->accessibleName();
+#ifdef DEBUG
+  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<QObject::sender()<<btn<<strKeyId;
+#endif
   bool isOk;
   int keyId = strKeyId.toInt(&isOk, 16);
   int involvedKeys = 1;
@@ -388,7 +391,9 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
 
   for (int i = 0; i < strlist.size(); ++i) {
     button = new QPushButton(strlist[i]);
-    button->setFont(QFont("WenQuanYiMicroHeiLight", 13));
+	button->setMaximumHeight(50);
+  	button->setMinimumHeight(50);
+//    button->setFont(QFont("WenQuanYiMicroHeiLight", 18));
     candButtons.push_back(button);
     selectPanel->layout()->addWidget(button);
     button->show();
@@ -397,7 +402,7 @@ void QVirtualKeyboard::showCandStrBar(QStringList strlist) {
   /* Fix border for the rightmost color, the sequence of the CSS must be
    * border-right then border-style else it won't work */
   candButtons.last()->setStyleSheet("QPushButton { border-right: 1px "
-      "#8A8A8A; border-style: groove; }");
+      "#8A8A8A; border-style: groove; height:48;}");
 
   if (candSignalMapper) {
     delete candSignalMapper;

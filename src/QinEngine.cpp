@@ -24,7 +24,7 @@
 
 #include <QDebug>
 
-#include "plugins/QinPinyin.h"
+//#include "plugins/QinPinyin.h"
 #include "plugins/QinChewing.h"
 #include "QinIMBases.h"
 #include "QVirtualKeyboard.h"
@@ -33,7 +33,7 @@ QinEngine::QinEngine() {
   vkeyboard = new QVirtualKeyboard(this);
   regInputMethod(new QinIMBase(":/data/English.xml"));
   regInputMethod(new QinChewing());
-  regInputMethod(new QinPinyin());
+//  regInputMethod(new QinPinyin());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   defaultIM = inputMethods[0];
 }
@@ -63,6 +63,9 @@ void QinEngine::setCurrentIM(int index) {
 bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
     bool autoRepeat) {
   bool doSendEvent = true;
+#ifdef DEBUG
+	qDebug("DEBUG1: KeyPressed: %d, %x", uni, keyId);
+#endif
 
   if (!isPress)
     return false;
@@ -114,18 +117,22 @@ bool QinEngine::filter(int uni, int keyId, int mod, bool isPress,
       currentIM->handle_Default(keyId);
       doSendEvent = false;
   }
-
+//从输入法核心中获取Commit String，并上屏
   updateCommitString();
-
+//从输入法核心中获取Preedit String，并上屏
   if (currentIM->getPreEditable())
     updatePreEditBuffer();
-
+//判断是否存在侯选词，如果存在则从输入法核心中获取选词列表，并显示在侯选列表
   if (currentIM->getDoPopUp())
     vkeyboard->showCandStrBar(currentIM->getPopUpStrings());
-
+  else
+  {
+  	vkeyboard->clearCandStrBar();
+  }
+//设置PreEdit String中的光标位置
   selectPreEditWord(currentIM->cursorCurrent());
 
-  return !doSendEvent;
+  return !doSendEvent;//返回true，则阻止事件做进一步处理
 }
 
 void QinEngine::updateCommitString() {
@@ -166,6 +173,10 @@ void QinEngine::mouseHandler(int offset, int state) {
   }
 }
 
+/**
+ * @brief 设置PreEdit String中的光标位置
+ * @param index 为cursorPosition
+ */
 void QinEngine::selectPreEditWord(int index) {
   if (index != -1)
     sendPreeditString(inputBuffer, index, 1);

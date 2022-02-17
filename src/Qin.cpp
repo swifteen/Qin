@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
   QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+  QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+  QApplication::setFont(QFont(QObject::tr("WenQuanYi Micro Hei"), 18, QFont::Normal));
 
   QWSInputMethod* im = new QinEngine;
   QWSServer::setCurrentInputMethod(im);
