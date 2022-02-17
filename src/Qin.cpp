@@ -1,6 +1,6 @@
 /**
  * @file   Qin.cpp
- * @brief  
+ * @brief
  * @author Wei-Ning Huang (AZ) <aitjcize@gmail.com>
  *
  * Copyright (C) 2010 -  Wei-Ning Huang (AZ) <aitjcize@gmail.com>
@@ -27,15 +27,14 @@
 
 #include "QinEngine.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-  QApplication app(argc, argv);
-  QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-  QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
-  QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-  QApplication::setFont(QFont(QObject::tr("WenQuanYi Micro Hei"), 18, QFont::Normal));
-
-  QWSInputMethod* im = new QinEngine;
-  QWSServer::setCurrentInputMethod(im);
-  return app.exec();
+    QApplication app(argc, argv);
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    QApplication::setFont(QFont(QObject::tr("WenQuanYi Micro Hei"), 18, QFont::Normal));
+    QWSInputMethod* im = new QinEngine;
+    QWSServer::setCurrentInputMethod(im);
+    return app.exec();
 }

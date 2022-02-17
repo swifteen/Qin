@@ -28,36 +28,35 @@
 
 QinCangjieIMBase::QinCangjieIMBase(QString xmlpath): QinTableIMBase(xmlpath) {}
 
-void QinCangjieIMBase::doQuery(void){
-	qDebug()<<__LINE__<<__func__<<"doQuery仓颉";
+void QinCangjieIMBase::doQuery(void)
+{
+    qDebug() << __LINE__ << __func__ << "doQuery仓颉";
     QString queryTemplate = getQueryTemplate();
     QString query = queryTemplate;
-  	QString strTemp = "";
-	
-    for (int i = 0; i < keyIndex; ++i) 
-		strTemp += QString(tolower(keyStrokes[i]));
-		
-	if(keyIndex != 0)
-	{
-		query = query.arg("'"+ strTemp + "%'");
-	}
-	else
-	{	
-	    query = query.arg("''");
-	}
-	
-	query = query.arg("limit " + QString::number(curpage * 10) + ", " + QString::number(10));
+    QString strTemp = "";
 
+    for (int i = 0; i < keyIndex; ++i) {
+        strTemp += QString(tolower(keyStrokes[i]));
+    }
 
+    if (keyIndex != 0) {
+        query = query.arg("'" + strTemp + "%'");
+    }
+    else {
+        query = query.arg("''");
+    }
+
+    query = query.arg("limit " + QString::number(curpage * 10) + ", " + QString::number(10));
 #ifdef DEBUG
-  qDebug() << "DEBUG: query: " << query;
+    qDebug() << "DEBUG: query: " << query;
 #endif
+    results.clear();
+    QSqlQuery queryResults = database.exec(query);
 
-  results.clear();
-  QSqlQuery queryResults = database.exec(query);
-  while (queryResults.next())
-    results += queryResults.value(0).toString();
-  
-  qDebug()<<__LINE__<<__func__<<results;
+    while (queryResults.next()) {
+        results += queryResults.value(0).toString();
+    }
+
+    qDebug() << __LINE__ << __func__ << results;
 }
 

@@ -36,17 +36,18 @@
 /**
  * @name  QinIMBase
  * @brief Base class for all input method for Qin. New input methods should
- * derive from QinIMBase. 
+ * derive from QinIMBase.
  */
-class QinIMBase {
-  protected:
+class QinIMBase
+{
+protected:
     QString xmlPath;
     QString imName;
     bool useCustomKeyMap;
     bool preEditable;//为flase代表像英语字母输入法，输入后直接上屏，为true代表像拼音输入法，输入后不直接上屏，还存在候选
-	private:
-		QString m_commitStr;//用于解决英文输入下，按空格无效
-  public:
+private:
+    QString m_commitStr;//用于解决英文输入下，按空格无效
+public:
     /** Public members **/
     QHash<QString, QString> fromStdKB_hash;
     QHash<QString, QString> fromShiftStdKB_hash;
@@ -103,8 +104,9 @@ class QinIMBase {
  * @name  QinTableIMBase
  * @brief Base class for table input methods.
  */
-class QinTableIMBase: public QinIMBase {
-  protected:
+class QinTableIMBase: public QinIMBase
+{
+protected:
     QString dbPath;
     QSqlDatabase database;
     QString commitString;
@@ -115,7 +117,7 @@ class QinTableIMBase: public QinIMBase {
     int maxKeyStrokes;//最多保留的待处理的键个数
     int keyIndex;//当前输入了多少个键，等待被处理
 
-  public:
+public:
     /** Public methods **/
     QinTableIMBase(QString xmlpath);
     virtual ~QinTableIMBase();

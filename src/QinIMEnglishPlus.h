@@ -6,34 +6,35 @@
 /**
  * @name  QinIMBase
  * @brief Base class for all input method for Qin. New input methods should
- * derive from QinIMBase. 
+ * derive from QinIMBase.
  */
-class QinIMEnglishPlus : public QinIMBase{
+class QinIMEnglishPlus : public QinIMBase
+{
 private:
-	QString commitString;
+    QString commitString;
     QStringList results;
-	int keyIndex;
-	int* keyStrokes;
+    int keyIndex;
+    int* keyStrokes;
     int maxKeyStrokes;
 public:
-	    QinIMEnglishPlus(QString xmlpath);
-	    virtual ~QinIMEnglishPlus();
-	    virtual bool isPreEditing(void);
-		virtual bool getDoPopUp(void);
-	    virtual QStringList getPopUpStrings(void);
-	    virtual void doQuery(void);
+    QinIMEnglishPlus(QString xmlpath);
+    virtual ~QinIMEnglishPlus();
+    virtual bool isPreEditing(void);
+    virtual bool getDoPopUp(void);
+    virtual QStringList getPopUpStrings(void);
+    virtual void doQuery(void);
 
 
-	    /** I/O related **/
-	    /* Caller must free it */
-	    virtual char* getPreEditString(void);
-	    virtual char* getCommitString(void);
+    /** I/O related **/
+    /* Caller must free it */
+    virtual char* getPreEditString(void);
+    virtual char* getCommitString(void);
 
-	    /** Key handling APIs **/
-	    virtual void handle_Default(int keyId);
-		
-		virtual void handle_Backspace(void);
+    /** Key handling APIs **/
+    virtual void handle_Default(int keyId);
+
+    virtual void handle_Backspace(void);
 
 };
-  
+
 #endif /* __QIN_SRC_QIN_IM_ENGLISH_H__ */

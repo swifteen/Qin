@@ -4,18 +4,18 @@
  * Copyright 2010 Wei-Ning Huang <aitjcize@gmail.com>
  *
  * Copyright 2009 EMBITEL (http://www.embitel.com)
- * 
+ *
  * This file is part of Virtual Keyboard Project.
- * 
+ *
  * Virtual Keyboard is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation
- * 
+ *
  * Virtual Keyboard is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with Virtual Keyboard. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,36 +37,37 @@
 
 class QinEngine;
 
-class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard {
-  Q_OBJECT
+class QVirtualKeyboard : public QWidget, public Ui::QVirtualKeyboard
+{
+    Q_OBJECT
 
-  public:
+public:
     QVirtualKeyboard(QinEngine* im);
     ~QVirtualKeyboard();
     void insertInputMethod(const QinIMBase* im);
     void clearCandStrBar(void);
     void showCandStrBar(QStringList strlist);
     void hideAll(void);
-private:		
-	void handelShift(bool checked);
-  private:
+private:
+    void handelShift(bool checked);
+private:
     QinEngine* imEngine;
     QWidget* selectPanel;
-	QHBoxLayout* layout;
+    QHBoxLayout* layout;
     bool Capsed;
     bool Shifted;
-	int ShiftedIndex;
+    int ShiftedIndex;
     bool location;
     int IMIndex;
     int opacity;
     int* selkeys;
     QVector<QString> regedIMs;
-    QSignalMapper *signalMapper;
-    QSignalMapper *candSignalMapper;
+    QSignalMapper* signalMapper;
+    QSignalMapper* candSignalMapper;
     QList<QToolButton*> allButtons;
     QVector<QPushButton*> candButtons;
 
-  private slots:
+private slots:
     void s_on_btn_clicked(int btn);
     void s_on_btnCands_clicked(QWidget* btn);
     void on_btnCaps_toggled(bool checked);

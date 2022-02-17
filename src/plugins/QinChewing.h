@@ -34,12 +34,13 @@
 #define QIN_CHEWING_CAND_PER_PAGE 10
 
 /* QinChewing class definition */
-class QinChewing: public QinIMBase {
-  private:
+class QinChewing: public QinIMBase
+{
+private:
     ChewingContext* chewContext;
     QString preEditString;
 
-  public:
+public:
     QinChewing(void);
     virtual ~QinChewing(void);
 

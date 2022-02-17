@@ -33,20 +33,21 @@
  * @name  QinTableIMBase
  * @brief Base class for table input methods.
  */
-class QinTableIMBase: public QinIMBase {
-  protected:
+class QinTableIMBase: public QinIMBase
+{
+protected:
     QString dbPath;
     QSqlDatabase database;
     QString queryTemplate;
     QHash<int, int> keyTransform;
-	QString commitString;
+    QString commitString;
     QStringList results;
     int* keyStrokes;
     int maxKeyStrokes;
     int keyIndex;
-	int curpage;
+    int curpage;
 
-  public:
+public:
     /** Public methods **/
     QinTableIMBase(QString xmlpath);
     virtual ~QinTableIMBase();
@@ -67,8 +68,8 @@ class QinTableIMBase: public QinIMBase {
     virtual void handle_Enter(void);
     virtual void handle_Space(void);
     virtual void handle_Backspace(void);
-	virtual void handle_Left(void);
-	virtual void handle_Right(void);
+    virtual void handle_Left(void);
+    virtual void handle_Right(void);
 };
 
 #endif /* __QIN_SRC_QIN_IM_TABLE_H__ */

@@ -29,30 +29,31 @@
 
 class QVirtualKeyboard;
 
-class QinEngine: public QWSInputMethod {
-  Q_OBJECT
+class QinEngine: public QWSInputMethod
+{
+    Q_OBJECT
 
-  friend class QVirtualKeyboard;
+    friend class QVirtualKeyboard;
 
-  public:
+public:
     QinEngine();
     ~QinEngine();
     void regInputMethod(QinIMBase* imb);
-	void regNumAndSymbolInputMethod(QinIMBase* imb);
+    void regNumAndSymbolInputMethod(QinIMBase* imb);
     void setCurrentIM(int index);
-	void setCurrentNumAndSymbolIM(int index);
-	bool getCurrentNumAndSymbolState();
-	void sendIMQuery(int property);
-private:	
-  bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
-  bool filter(const QPoint& point, int state, int wheel);
-  virtual void queryResponse(int property, const QVariant& result);
-  void updateHandler(int type);
-  void mouseHandler(int offset, int state);
-  void updateCommitString();
-  void updatePreEditBuffer(void);
-  void selectPreEditWord(int index);
-  private:
+    void setCurrentNumAndSymbolIM(int index);
+    bool getCurrentNumAndSymbolState();
+    void sendIMQuery(int property);
+private:
+    bool filter(int uni, int keyId, int mod, bool isPress, bool autoRepeat);
+    bool filter(const QPoint& point, int state, int wheel);
+    virtual void queryResponse(int property, const QVariant& result);
+    void updateHandler(int type);
+    void mouseHandler(int offset, int state);
+    void updateCommitString();
+    void updatePreEditBuffer(void);
+    void selectPreEditWord(int index);
+private:
     QVirtualKeyboard* vkeyboard;
     QString inputBuffer;
     QVector<QinIMBase*> numAndSymbolInputMethods;//符号和数字输入在不同的语言下存在差异
@@ -60,9 +61,9 @@ private:
     QinIMBase* defaultIM;
     QinIMBase* currentIM;
     int selected;
-	bool m_bNumAndSymbol;//当前状态是否为符号和数字输入
-	int m_cursorPosition;
-	QString m_surroundingText;
+    bool m_bNumAndSymbol;//当前状态是否为符号和数字输入
+    int m_cursorPosition;
+    QString m_surroundingText;
 };
 
 #endif /* __QIN_SRC_QIN_ENGINE_H__ */
