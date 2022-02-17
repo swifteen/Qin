@@ -31,6 +31,7 @@
 /* Number of selection keys */
 #define SELKEY_COUNT 10
 #define SELKEYS { 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30 }
+#define MAX_SELECT_WIDTH (640)//TODO 动态计算候选区域宽度
 
 /**
  * @name  QinIMBase
@@ -109,9 +110,9 @@ class QinTableIMBase: public QinIMBase {
     QStringList results;
     QString queryTemplate;
     QHash<int, int> keyTransform;
-    int* keyStrokes;
-    int maxKeyStrokes;
-    int keyIndex;
+    int* keyStrokes;//保存用户输入的键，待处理的
+    int maxKeyStrokes;//最多保留的待处理的键个数
+    int keyIndex;//当前输入了多少个键，等待被处理
 
   public:
     /** Public methods **/

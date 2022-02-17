@@ -1,14 +1,7 @@
 #include "QinGooglePinyin.h"
 #include "QinIMBases.h"
-
-#include <cstdio>
-#include <cctype>
-#include <cstdlib>
-#include <cstring>
-#include <cmath>
-#include <vector>
-#include <iterator>
-#include <algorithm>
+#include <QApplication>
+#include <QFontMetrics>
 #include <QStringList>
 #include <QDebug>
 #include <QLatin1String>
@@ -236,6 +229,10 @@ public:
 				The type parameter specifies which selection list has changed
 				The input method emits this signal when the current index has changed in the selection list identified by type.
 			*/
+			//通知更新候选列表
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<totalChoicesNum << d->totalChoicesNum;
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state << d->state;
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candidatesList << d->candidatesList;
 #if 0//TODO
 			emit q->selectionListChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList);
 			emit q->selectionListActiveItemChanged(QVirtualKeyboardSelectionListModel::Type::WordCandidateList,
@@ -256,6 +253,7 @@ QinGooglePinyin::QinGooglePinyin(void):
 	state(Idle),
 	totalChoicesNum(0),
 	candidatesList(),
+	m_iCurSelectPage(0),
 	pinyinDecoderService(PinyinDecoderService::getInstance()),
 	surface(),
 	fixedLen(0),
@@ -265,7 +263,7 @@ QinGooglePinyin::QinGooglePinyin(void):
 	posDelSpl(-1),
 	isPosInSpl(false)
 {
-	candidates.clear();
+	m_selectRangeCache.clear();
 	preeditStr.clear();
 	commitStr.clear();
 }
@@ -297,7 +295,8 @@ void QinGooglePinyin::resetToIdleState()
 	activeCmpsLen = 0;
 	posDelSpl = -1;
 	isPosInSpl = false;
-
+	m_iCurSelectPage = 0;
+	m_selectRangeCache.clear();
 	resetCandidates();
 }
 
@@ -415,10 +414,10 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 			return;
 		}
 	}
-
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candId<<result;
 	resetCandidates();
 	totalChoicesNum = result;
-
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candId<<result;
 	surface = pinyinDecoderService->pinyinString(false);
 	QVector<int> splStart = pinyinDecoderService->spellingStartPositions();
 	QString fullSent = pinyinDecoderService->candidateAt(0);
@@ -432,7 +431,10 @@ void QinGooglePinyin::chooseDecodingCandidate(int candId)
 	if (!surfaceDecodedLen) {
 		composingStrDisplay = composingStr.toLower();
 		if (!totalChoicesNum)
+		{
 			totalChoicesNum = 1;
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+		}
 	} else {
 		activeCmpsLen = activeCmpsLen - (surface.length() - surfaceDecodedLen);
 		composingStrDisplay = fullSent.mid(0, fixedLen);
@@ -466,7 +468,7 @@ void QinGooglePinyin::choosePredictChoice(int choiceId)
 
 	candidatesList.append(tmp);
 	totalChoicesNum = 1;
-
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<choiceId<<totalChoicesNum;
 	surface.clear();
 	fixedLen = tmp.length();
 	composingStr = tmp;
@@ -484,6 +486,7 @@ void QinGooglePinyin::resetCandidates()
 {
 	candidatesList.clear();
 	if (totalChoicesNum) {
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<totalChoicesNum;
 		totalChoicesNum = 0;
 	}
 }
@@ -512,6 +515,7 @@ void QinGooglePinyin::tryPredict()
 		candidatesList = pinyinDecoderService->predictionList(history);
 #endif
 		totalChoicesNum = candidatesList.size();
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<totalChoicesNum;
 		finishSelection = false;
 		state = Predict;
 	} else {
@@ -536,8 +540,72 @@ bool QinGooglePinyin::getDoPopUp(void) {
 }
 
 QStringList QinGooglePinyin::getPopUpStrings(void) {
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<candidates;
-  return candidates;
+
+	/*根据候选列表可展示的宽度，计算出当前可以展示的候选列表，
+	只在正向翻页时，才计算候选词的占用宽度，计算之后缓存起来，下次直接使用
+	*/
+    QFontMetrics fm(QApplication::font());
+	int totalWidth = 0;
+	int totalCount = candidatesCount();
+	QStringList popUpList;
+	popUpList.clear();
+//	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<m_iCurSelectPage<<m_selectRangeCache.count()<<totalCount;
+	
+	if(m_iCurSelectPage + 1 <= m_selectRangeCache.count())//如果小于缓存的页项，则一定存在缓存，直接从缓存中取
+	{		
+		int pos = m_selectRangeCache.at(m_iCurSelectPage).pos;
+		int length = m_selectRangeCache.at(m_iCurSelectPage).length;
+		int i = 0;
+		for (; i < length; i++)
+		{
+			QString str = candidateAt(pos + i);//只能调用此函数来遍历，候选词列表不是一次性全部取出的
+			popUpList.push_back(str);
+		}
+		return popUpList;
+	}
+	else//缓存中不存在，想要显示的页可能是有效的，也可能是无效的
+	{
+//		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<m_iCurSelectPage<<m_selectRangeCache.count();
+		int prevPos = 0;
+		int length = 0;		
+		if(m_selectRangeCache.count() > 0)//如果大于0，代表可以取到前一页的范围，先取到前一页中的范围，从而得到新的起始位置
+		{
+			prevPos = m_selectRangeCache.at(m_iCurSelectPage - 1).pos;
+			length = m_selectRangeCache.at(m_iCurSelectPage - 1).length;		
+		}
+		if(prevPos + length >= totalCount)//翻到最后一页之后，就翻不动了,还原到上一页
+		{
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"last page :"<<m_iCurSelectPage<<m_selectRangeCache.count()<<prevPos<<length;
+			m_iCurSelectPage--;
+			if(m_iCurSelectPage < 0)
+				m_iCurSelectPage = 0;
+			return getPopUpStrings();//这里利用了递归
+		}
+		int i = 0;
+		for (; i < SELKEY_COUNT; i++)
+		{
+			if(prevPos + length + i >= totalCount)//翻到最后一页之后，就翻不动了
+			{
+				qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"last word count limit:"<<prevPos<<length<<i<<totalCount;
+				break;
+			}
+			QString str = candidateAt(prevPos + length + i);//只能调用此函数来遍历，候选词列表不是一次性全部取出的
+			totalWidth += fm.width(str);
+			if(totalWidth > MAX_SELECT_WIDTH)
+			{
+				qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"last word width limit:"<<prevPos<<length<<i<<totalCount;
+				break;
+			}
+			popUpList.push_back(str);
+		}
+		//缓存起来，避免下次重新计算宽度
+		SelectRange range;
+		range.pos = prevPos + length;
+		range.length = i;
+//		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<"cached:"<<range.pos<<range.length<<prevPos<<length<<i<<totalCount;
+		m_selectRangeCache<<range;
+	}
+	return popUpList;
 }
 
 char* QinGooglePinyin::getPreEditString(void) {
@@ -569,8 +637,6 @@ void QinGooglePinyin::update(void)
 }
 
 void QinGooglePinyin::handle_Default(int unicode, int keycode) {
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<tolower(keycode)<<Qt::Key_A<<Qt::Key_Z<<QString("%1").arg(Qt::Key_A, 0, 16)<<QString("%1").arg(Qt::Key_Z, 0, 16);
-//	keycode = keycode-0x20;
 	if ((keycode >= Qt::Key_A && keycode <= Qt::Key_Z) || (keycode == Qt::Key_Apostrophe)) {
 		
 	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state;
@@ -578,13 +644,20 @@ void QinGooglePinyin::handle_Default(int unicode, int keycode) {
 			resetToIdleState();
 		if (addSpellingChar(unicode, state == Idle)) //TODO
 		{
+			qDebug()<< __FILE__ << __FUNCTION__ << __LINE__;
+			m_selectRangeCache.clear();
 			chooseAndUpdate(-1);
 		}
 	}
 	else//其它输入则完成输入
 	{
+		qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<state;
 		chooseAndFinish();
 	}
+//	if(keycode >= Qt::Key_0 && keycode <= Qt::Key_9))
+//	{
+//		int idx = keycode - Qt::Key_0;
+//	}
 }
 
 void QinGooglePinyin::handle_Space(void) {
@@ -593,9 +666,6 @@ void QinGooglePinyin::handle_Space(void) {
 	if (state != Predict && candidatesCount() > 0) {
 		chooseAndUpdate(0);
 	}
-}
-
-void QinGooglePinyin::handle_Esc(void) {
 }
 
 void QinGooglePinyin::handle_Enter(void) {
@@ -608,10 +678,6 @@ void QinGooglePinyin::handle_Enter(void) {
   }
 }
 
-void QinGooglePinyin::handle_Del(void) {
-
-}
-
 void QinGooglePinyin::handle_Backspace(void) {
 	if (removeSpellingChar()) {
 		chooseAndUpdate(-1);
@@ -619,15 +685,22 @@ void QinGooglePinyin::handle_Backspace(void) {
 }
 
 void QinGooglePinyin::handle_Left(void) {
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr;
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr<<m_iCurSelectPage;
   if (preeditStr.length() > 0) {
-
+  	//只更新候选页索引，在getPopUpStrings函数中获取候选词
+	m_iCurSelectPage--;
+	if(m_iCurSelectPage < 0)
+		m_iCurSelectPage = 0;
   }
 }
 
 void QinGooglePinyin::handle_Right(void) {
-	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr;
+	qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<state<<candidatesCount()<<surface<<preeditStr<<m_iCurSelectPage;
   if (preeditStr.length() > 0) {
-
+	  /*
+	  只更新候选页索引，在getPopUpStrings函数中获取候选词
+	  这里执行加加后，会出现越界，在getPopUpStrings函数中需要对越界的情况做处理
+	  */
+	  m_iCurSelectPage++;
   }
 }

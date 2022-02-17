@@ -68,9 +68,7 @@ class QinGooglePinyin: public QinIMBase
 	  /** Key handling APIs **/
 	  virtual void handle_Default(int unicode, int keycode);
 	  virtual void handle_Space(void);
-	  virtual void handle_Esc(void);
 	  virtual void handle_Enter(void);
-	  virtual void handle_Del(void);
 	  virtual void handle_Backspace(void);
 	  virtual void handle_Left(void);
 	  virtual void handle_Right(void);
@@ -93,10 +91,15 @@ class QinGooglePinyin: public QinIMBase
 	  int totalChoicesNum;
 	  QList<QString> candidatesList;
   private:
-    QStringList candidates;
     QString preeditStr;
     QString commitStr;
-
+	
+		typedef struct{
+			int pos;//起始索引
+			int length;//长度
+		}SelectRange;
+		QVector<SelectRange> m_selectRangeCache;//缓存候选列表每一页的范围
+		int m_iCurSelectPage;//候选词列表显示页
   private:
 	  QScopedPointer<PinyinDecoderService> pinyinDecoderService;
 	  QString surface;

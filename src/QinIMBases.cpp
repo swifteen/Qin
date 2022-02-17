@@ -218,7 +218,9 @@ void QinIMBase::handle_Left(void) {}
 void QinIMBase::handle_PageDown(void) {}
 void QinIMBase::handle_PageUp(void) {}
 void QinIMBase::handle_Right(void) {}
-void QinIMBase::handle_Space(void) {}
+void QinIMBase::handle_Space(void) {
+	m_commitStr = " ";
+}
 void QinIMBase::handle_Tab(void) {}
 void QinIMBase::handle_Up(void) {}
 
@@ -377,7 +379,7 @@ void QinTableIMBase::handle_Default(int unicode, int keycode) {
 
   if (keyIndex == maxKeyStrokes)
     return;
-
+//如果之前存在合成的输出结果，如果当前为数字键，则选中数字选择的字作为输出结果
   if (results.size()) {
     for (size_t i = 0; i < SELKEY_COUNT; ++i)
       if (keycode == keys[i]) {

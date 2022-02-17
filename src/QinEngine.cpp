@@ -34,11 +34,10 @@ QinEngine::QinEngine() {
   vkeyboard = new QVirtualKeyboard(this);
   regInputMethod(new QinIMBase(":/data/English.xml"));
   regInputMethod(new QinChewing());
-//  regInputMethod(new QinPinyin());
   regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   regInputMethod(new QinGooglePinyin());
   defaultIM = inputMethods[0];
-	//注册数字和符号输入核心
+	//注册数字和符号输入核心，符号和数字输入在不同的语言下存在差异
   regNumAndSymbolInputMethod(new QinIMBase(":/data/num_symbol_ch.xml"));
 	m_bNumAndSymbol = false;
 }
@@ -145,7 +144,7 @@ bool QinEngine::filter(int unicode, int keycode, int modifiers, bool isPress, bo
     default:
       if (keycode & Qt::Key_Escape)
         return true;
-	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<(keycode >= Qt::Key_A) << (keycode <= Qt::Key_Z);
+//	  qDebug()<< __FILE__ << __FUNCTION__ << __LINE__<<unicode<<keycode<<(keycode >= Qt::Key_A) << (keycode <= Qt::Key_Z);
       currentIM->handle_Default(unicode,keycode);
       doSendEvent = false;
   }
