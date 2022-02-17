@@ -64,7 +64,7 @@ public:
     virtual char* getCommitString(void);
 
     /** Key handling APIs **/
-    virtual void handle_Default(int keyId);
+    virtual void handle_Default(int unicode, int keyId);
     virtual void handle_Enter(void);
     virtual void handle_Space(void);
     virtual void handle_Backspace(void);

@@ -203,7 +203,7 @@ char* QinTableIMBase::getCommitString(void)
     return commitStr;
 }
 
-void QinTableIMBase::handle_Default(int keyId)
+void QinTableIMBase::handle_Default(int unicode, int keyId)
 {
     qDebug() << __LINE__ << __func__ << "无虾米";
     int keys[] = SELKEYS;
