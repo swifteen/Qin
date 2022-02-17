@@ -2,6 +2,7 @@
   <qresource>
     <file>data/selectPanel.qss</file>
     <file>data/English.xml</file>
+    <file>data/EnglishPlus.xml</file>
     <file>data/Chewing.xml</file>
     <file>data/Boshiamy.xml</file>
 	<file>data/Wubi.xml</file>

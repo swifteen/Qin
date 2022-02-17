@@ -21,10 +21,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "QinIMBases.h"
-
-#include <cstring>
-
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDomDocument>
@@ -33,7 +29,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QTextStream>
-#include <QVariant>
+#include <cstring>
+
+#include "QinIMBases.h"
 
 /* QinIMBase methods implementation */
 

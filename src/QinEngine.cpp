@@ -28,6 +28,7 @@
 #include "plugins/QinChewing.h"//注音输入法
 #include "plugins/QinGooglePinyin.h"//参考Qt5官方实现的谷歌拼音输入法
 #include "QinIMBases.h"
+#include "QinIMEnglishPlus.h"
 #include "QinIMTables.h"
 #include "QinIMWubi.h"
 #include "QinIMCangjie.h"
@@ -39,8 +40,8 @@ QinEngine::QinEngine() {
   vkeyboard = new QVirtualKeyboard(this);
   regInputMethod(new QinIMBase(":/data/English.xml"));
   regInputMethod(new QinChewing());
-  regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   regInputMethod(new QinGooglePinyin(this));
+  regInputMethod(new QinTableIMBase(":/data/Boshiamy.xml"));
   regInputMethod(new QinWubiIMBase(":/data/Wubi.xml"));
   regInputMethod(new QinCangjieIMBase(":/data/Cangjie.xml"));
   defaultIM = inputMethods[0];
@@ -216,7 +217,6 @@ void QinEngine::queryResponse(int property, const QVariant& result)
 
 void QinEngine::updateCommitString() {
   char* commit_str = currentIM->getCommitString();
-  qDebug()<<"XXXX "<<commit_str;
   if (commit_str) {
     sendCommitString(commit_str);
     delete commit_str;

@@ -25,7 +25,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QTextStream>
 
@@ -86,6 +85,7 @@ QinTableIMBase::QinTableIMBase(QString xmlpath): QinIMBase(xmlpath) {
   /* Initialize members */
   keyIndex = 0;
   keyStrokes = new int[maxKeyStrokes + 1];
+  curpage = 0;
 
   database = QSqlDatabase::addDatabase("QSQLITE", dbPath);
   database.setDatabaseName(dbPath);
@@ -122,42 +122,39 @@ QStringList QinTableIMBase::getPopUpStrings(void) {
 }
 
 void QinTableIMBase::doQuery(void) {
-  int count = 0;
+  qDebug()<<__LINE__<<__func__<<"doQuery无虾米";
+  qDebug()<<__LINE__<<__func__<<maxKeyStrokes<<keyIndex;
+
   QString queryTemplate = getQueryTemplate();
   QString query = queryTemplate;
-  qDebug()<<__LINE__<<__func__<<maxKeyStrokes;
-  qDebug()<<__LINE__<<__func__<<keyIndex;
-  qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX0";
-  
+ 
   for (int i = 0; i < maxKeyStrokes; ++i) {
     if (i < keyIndex) {
       query = query.arg("m%1=%2%3").arg(i).arg(
-          keyTransform[tolower(keyStrokes[i])]);
-	  //qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX1";
+          keyTransform[tolower(keyStrokes[i])]); 
       if (i != keyIndex -1)
         query = query.arg(" AND %1");
       else
         query = query.arg("");
-	 //qDebug()<<__LINE__<<__func__<<query<<"XXXXXXXXXXXXXXXX2";
 	}
   }
+  
+  query = query.replace(";", " limit " + QString::number(curpage * 10) + ", " + QString::number(10) + ";");
 
 #ifdef DEBUG
   qDebug() << "DEBUG: query: " << query;
 #endif
-
   results.clear();
   QSqlQuery queryResults = database.exec(query);
-  while (queryResults.next() && count++ < 10)
-    results += queryResults.value(0).toString();
-
-  qDebug()<<__LINE__<<__func__;
-  qDebug()<<results;
+  while (queryResults.next())
+  {
+     results += queryResults.value(0).toString();	
+  }
+  qDebug()<<__LINE__<<__func__<<results;
 }
 
 char* QinTableIMBase::getPreEditString(void) {
-	qDebug()<<__LINE__<<__func__;
-
+  qDebug()<<__LINE__<<__func__;
   char* preEditStr = NULL;
   const char* cstr = NULL;
 
@@ -179,8 +176,7 @@ char* QinTableIMBase::getPreEditString(void) {
 }
 
 char* QinTableIMBase::getCommitString(void) {
-	qDebug()<<__LINE__<<__func__;
-
+  qDebug()<<__LINE__<<__func__;
   char* commitStr = NULL;
   const char* cstr = NULL;
 
@@ -197,6 +193,7 @@ char* QinTableIMBase::getCommitString(void) {
 void QinTableIMBase::handle_Default(int keyId) {
   qDebug()<<__LINE__<<__func__<<"无虾米";
   int keys[] = SELKEYS;
+
   if (results.size()) {
     for (size_t i = 0; i < SELKEY_COUNT; ++i)
       if (keyId == keys[i]) {
@@ -209,16 +206,17 @@ void QinTableIMBase::handle_Default(int keyId) {
   }
 
   if (keyIndex == maxKeyStrokes){
-  	  qDebug()<<__LINE__<<__func__<<keyIndex<<maxKeyStrokes<<"wwwwwwwwwwwwwwwwww1";
-	  return;
+		 qDebug()<<__LINE__<<__func__<<keyIndex<<maxKeyStrokes;
+		 return;
   }
-
+   
   if (keyTransform.find(tolower(keyId)) == keyTransform.end()){
-	qDebug()<<__LINE__<<__func__<<"wwwwwwwwwwwwwwwwwwwwwwwwww";
+	qDebug()<<__LINE__<<__func__<<"handle_Default-XXXXX-无虾米";
 	return;
   }
 
   keyStrokes[keyIndex++] = keyId;
+  curpage = 0;
   doQuery();
 }
 
@@ -240,7 +238,26 @@ void QinTableIMBase::handle_Enter(void) {
 }
 
 void QinTableIMBase::handle_Backspace(void) {
+  curpage = 0;
   if (keyIndex > 0)
     --keyIndex;
   doQuery();
 }
+
+void QinTableIMBase::handle_Left(void){
+	 qDebug()<<__LINE__<<__func__<<"无虾米";
+	 if(curpage > 0)
+	 {  --curpage;
+	 	doQuery();
+	 }
+}
+
+void QinTableIMBase::handle_Right(void){
+	 qDebug()<<__LINE__<<__func__<<"无虾米";
+	 ++curpage;
+	 doQuery();
+	 if(results.size() == 0) {
+		 handle_Left();
+	 }
+}
+

@@ -44,6 +44,7 @@ class QinTableIMBase: public QinIMBase {
     int* keyStrokes;
     int maxKeyStrokes;
     int keyIndex;
+	int curpage;
 
   public:
     /** Public methods **/
@@ -66,6 +67,8 @@ class QinTableIMBase: public QinIMBase {
     virtual void handle_Enter(void);
     virtual void handle_Space(void);
     virtual void handle_Backspace(void);
+	virtual void handle_Left(void);
+	virtual void handle_Right(void);
 };
 
 #endif /* __QIN_SRC_QIN_IM_TABLE_H__ */

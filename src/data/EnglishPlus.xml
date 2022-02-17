@@ -21,9 +21,9 @@
 -->
 
 <QinIM>
-  <name>English</name>
-  <tableim>false</tableim>
-  <preeditable>false</preeditable>
+  <name>English+</name>
+  <tableim>flase</tableim>
+  <preeditable>true</preeditable>
   <customkeymap>true</customkeymap>
   <keymap>
     <normal>

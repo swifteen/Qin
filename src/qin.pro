@@ -22,6 +22,7 @@ HEADERS += \
   QinConfig.h \
   QinEngine.h \
   QinIMBases.h \
+  QinIMEnglishPlus.h \
   QinIMTables.h \
   QinIMWubi.h \
   QinIMCangjie.h \
@@ -35,6 +36,7 @@ SOURCES += \
   Qin.cpp \
   QinEngine.cpp \
   QinIMBases.cpp \
+  QinIMEnglishPlus.cpp \
   QinIMTables.cpp \
   QinIMWubi.cpp \
   QinIMCangjie.cpp \
